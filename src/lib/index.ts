@@ -77,7 +77,7 @@ export function typed_keys<K extends PropertyKey>(obj: Record<K, unknown>): Arra
 	return Object.keys(obj) as Array<K>;
 }
 
-export function typed_entries<K extends PropertyKey, V>(obj: Partial<Record<K, V>>): Array<[K, V]> {
+export function typed_entries<K extends PropertyKey, V>(obj: Record<K, V>): Array<[K, V]> {
 	return Object.entries(obj) as Array<[K, V]>;
 }
 
