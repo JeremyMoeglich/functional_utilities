@@ -92,3 +92,17 @@ export function nullableobj_to_partial<K extends PropertyKey, V>(
 		typed_entries(obj).filter(([, v]) => ((v ?? null) === null ? false : true))
 	) as Record<K, V>;
 }
+
+export function map_values<K extends PropertyKey, V, NV>(
+	obj: Record<K, V>,
+	func: (v: V) => NV
+): Record<K, NV> {
+	return typed_from_entries(typed_entries(obj).map(([k, v]) => [k, func(v)]));
+}
+
+export function map_entries<K extends PropertyKey, V, NK extends PropertyKey, NV>(
+	obj: Record<K, V>,
+	func: (entries: [K, V]) => [NK, NV]
+): Record<NK, NV> {
+	return typed_from_entries(typed_entries(obj).map((entry) => func(entry)));
+}
