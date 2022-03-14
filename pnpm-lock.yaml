@@ -1,34 +1,33 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@playwright/test': ^1.19.1
+  '@playwright/test': ^1.19.2
   '@sveltejs/adapter-auto': next
   '@sveltejs/kit': next
   '@types/lodash-es': ^4.17.6
-  '@typescript-eslint/eslint-plugin': ^5.10.1
-  '@typescript-eslint/parser': ^5.10.1
+  '@typescript-eslint/eslint-plugin': ^5.14.0
+  '@typescript-eslint/parser': ^5.14.0
   eslint: ^7.32.0
-  eslint-config-prettier: ^8.3.0
-  eslint-plugin-svelte3: ^3.2.1
+  eslint-config-prettier: ^8.5.0
+  eslint-plugin-svelte3: ^3.4.1
   lodash-es: ^4.17.21
   prettier: ^2.5.1
-  prettier-plugin-svelte: ^2.5.0
-  svelte: ^3.44.0
-  svelte-check: ^2.2.6
-  svelte-preprocess: ^4.10.1
+  prettier-plugin-svelte: ^2.6.0
+  svelte: ^3.46.4
+  svelte-check: ^2.4.5
+  svelte-preprocess: ^4.10.4
   svelte2tsx: ^0.5.5
   tslib: ^2.3.1
   typescript: ~4.6.2
 
 dependencies:
-  '@types/lodash-es': 4.17.6
   lodash-es: 4.17.21
-  svelte2tsx: 0.5.5_svelte@3.46.4+typescript@4.6.2
 
 devDependencies:
   '@playwright/test': 1.19.2
   '@sveltejs/adapter-auto': 1.0.0-next.31
   '@sveltejs/kit': 1.0.0-next.295_svelte@3.46.4
+  '@types/lodash-es': 4.17.6
   '@typescript-eslint/eslint-plugin': 5.14.0_e3f5f4efe2bd492e36eb6c1c619dfc98
   '@typescript-eslint/parser': 5.14.0_eslint@7.32.0+typescript@4.6.2
   eslint: 7.32.0
@@ -39,6 +38,7 @@ devDependencies:
   svelte: 3.46.4
   svelte-check: 2.4.5_svelte@3.46.4
   svelte-preprocess: 4.10.4_svelte@3.46.4+typescript@4.6.2
+  svelte2tsx: 0.5.5_svelte@3.46.4+typescript@4.6.2
   tslib: 2.3.1
   typescript: 4.6.2
 
@@ -812,11 +812,11 @@ packages:
     resolution: {integrity: sha512-R+zTeVUKDdfoRxpAryaQNRKk3105Rrgx2CFRClIgRGaqDTdjsm8h6IYA8ir584W3ePzkZfst5xIgDwYrlh9HLg==}
     dependencies:
       '@types/lodash': 4.14.179
-    dev: false
+    dev: true
 
   /@types/lodash/4.14.179:
     resolution: {integrity: sha512-uwc1x90yCKqGcIOAT6DwOSuxnrAbpkdPsUOZtwrXb4D/6wZs+6qG7QnIawDuZWg0sWpxl+ltIKCaLoMlna678w==}
-    dev: false
+    dev: true
 
   /@types/node/17.0.21:
     resolution: {integrity: sha512-DBZCJbhII3r90XbQxI8Y9IjjiiOGlZ0Hr32omXIZvwwZ7p4DMMXGrKXVyPfuoBOri9XNtL0UK69jYIBIsRX3QQ==}
@@ -1119,8 +1119,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001314
-      electron-to-chromium: 1.4.80
+      caniuse-lite: 1.0.30001315
+      electron-to-chromium: 1.4.82
       escalade: 3.1.1
       node-releases: 2.0.2
       picocolors: 1.0.0
@@ -1142,8 +1142,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /caniuse-lite/1.0.30001314:
-    resolution: {integrity: sha512-0zaSO+TnCHtHJIbpLroX7nsD+vYuOVjl3uzFbJO1wMVbuveJA0RK2WcQA9ZUIOiO0/ArMiMgHJLxfEZhQiC0kw==}
+  /caniuse-lite/1.0.30001315:
+    resolution: {integrity: sha512-5v7LFQU4Sb/qvkz7JcZkvtSH1Ko+1x2kgo3ocdBeMGZSOFpuE1kkm0kpTwLtWeFrw5qw08ulLxJjVIXIS8MkiQ==}
     dev: true
 
   /chalk/2.4.2:
@@ -1242,7 +1242,7 @@ packages:
 
   /dedent-js/1.0.1:
     resolution: {integrity: sha1-vuX7fJ5yfYXf+iRZDRDsGrElUwU=}
-    dev: false
+    dev: true
 
   /deep-is/0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
@@ -1284,8 +1284,8 @@ packages:
       esutils: 2.0.3
     dev: true
 
-  /electron-to-chromium/1.4.80:
-    resolution: {integrity: sha512-COsbJCGVYCc/aAY4cd94x1Js3q0r406YKGbdL8LXHg0O9dEjuFEFU/vZneRxBxKo/f1lLHi0YyAR7sbFM+i8Bg==}
+  /electron-to-chromium/1.4.82:
+    resolution: {integrity: sha512-Ks+ANzLoIrFDUOJdjxYMH6CMKB8UQo5modAwvSZTxgF+vEs/U7G5IbWFUp6dS4klPkTDVdxbORuk8xAXXhMsWw==}
     dev: true
 
   /emoji-regex/8.0.0:
@@ -1849,7 +1849,7 @@ packages:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 3.0.4
+      minimatch: 3.1.2
       once: 1.4.0
       path-is-absolute: 1.0.1
     dev: true
@@ -2141,7 +2141,7 @@ packages:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
     dependencies:
       tslib: 2.3.1
-    dev: false
+    dev: true
 
   /lru-cache/6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
@@ -2231,7 +2231,7 @@ packages:
     dependencies:
       lower-case: 2.0.2
       tslib: 2.3.1
-    dev: false
+    dev: true
 
   /node-releases/2.0.2:
     resolution: {integrity: sha512-XxYDdcQ6eKqp/YjI+tb2C5WM2LgjnZrfYg4vgQt49EK268b6gYCHsBLrK2qvJo4FmCtqmKezb0WZFK4fkrZNsg==}
@@ -2315,7 +2315,7 @@ packages:
     dependencies:
       no-case: 3.0.4
       tslib: 2.3.1
-    dev: false
+    dev: true
 
   /path-exists/3.0.0:
     resolution: {integrity: sha1-zg6+ql94yxiSXqfYENe1mwEP1RU=}
@@ -2843,7 +2843,7 @@ packages:
       pascal-case: 3.1.2
       svelte: 3.46.4
       typescript: 4.6.2
-    dev: false
+    dev: true
 
   /table/6.8.0:
     resolution: {integrity: sha512-s/fitrbVeEyHKFa7mFdkuQMWlH1Wgw/yEXMt5xACT4ZpzWFluehAxRtUUQKPuWhaLAWhFcVx6w3oC8VKaUfPGA==}
@@ -2885,6 +2885,7 @@ packages:
 
   /tslib/2.3.1:
     resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
+    dev: true
 
   /tsutils/3.21.0_typescript@4.6.2:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
