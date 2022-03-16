@@ -10,6 +10,7 @@ export function all(values: unknown[]): boolean {
 		return values.reduce<boolean>((a, b) => !!a && !!b, !!values[0]);
 	}
 }
+
 export function any(values: unknown[]): boolean {
 	for (const value of values) {
 		if (value) {
@@ -105,4 +106,17 @@ export function map_entries<K extends PropertyKey, V, NK extends PropertyKey, NV
 	func: (entries: [K, V]) => [NK, NV]
 ): Record<NK, NV> {
 	return typed_from_entries(typed_entries(obj).map((entry) => func(entry)));
+}
+
+export function cover<K extends PropertyKey, V, T extends Record<K, V>>(
+	template: T,
+	obj: Partial<T>
+): T {
+	return map_entries(template, ([k, v]) => {
+		if (k in obj) {
+			return [k, obj[k]];
+		} else {
+			return [k, v];
+		}
+	}) as T;
 }
