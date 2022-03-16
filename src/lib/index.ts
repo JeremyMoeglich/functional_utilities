@@ -10,8 +10,7 @@ export function all(values: unknown[]): boolean {
 		return values.reduce<boolean>((a, b) => !!a && !!b, !!values[0]);
 	}
 }
-
-export function any(values: unknown[]): boolean {
+export function some(values: unknown[]): boolean {
 	for (const value of values) {
 		if (value) {
 			return true;
@@ -94,6 +93,13 @@ export function nullableobj_to_partial<K extends PropertyKey, V>(
 	) as Record<K, V>;
 }
 
+export function map_keys<K extends PropertyKey, V, NK extends PropertyKey>(
+	obj: Record<K, V>,
+	func: (v: K) => NK
+): Record<NK, V> {
+	return typed_from_entries(typed_entries(obj).map(([k, v]) => [func(k), v]));
+}
+
 export function map_values<K extends PropertyKey, V, NV>(
 	obj: Record<K, V>,
 	func: (v: V) => NV
@@ -119,4 +125,9 @@ export function cover<K extends PropertyKey, V, T extends Record<K, V>>(
 			return [k, v];
 		}
 	}) as T;
+}
+
+export function pass_back<A>(value: A, func: (v: A) => unknown): A {
+	func(value);
+	return value;
 }
