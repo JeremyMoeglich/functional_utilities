@@ -114,10 +114,7 @@ export function map_entries<K extends PropertyKey, V, NK extends PropertyKey, NV
 	return typed_from_entries(typed_entries(obj).map((entry) => func(entry)));
 }
 
-export function cover<K extends PropertyKey, V, T extends Record<K, V>>(
-	template: T,
-	obj: Partial<T>
-): T {
+export function cover<T extends Record<PropertyKey, unknown>>(template: T, obj: Partial<T>): T {
 	return map_entries(template, ([k, v]) => {
 		if (k in obj) {
 			return [k, obj[k]];
