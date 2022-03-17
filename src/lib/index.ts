@@ -33,7 +33,7 @@ export function range(arg1: number, arg2: number | undefined = undefined): Array
 	} else if (arg1 > arg2) {
 		throw 'Arg2 has to be higher or equal compared to Arg1';
 	}
-	return [...Array(arg2 - arg1).keys()].map((v) => v + arg1);
+	return Array.from(Array(arg2 - arg1).keys()).map((v) => v + arg1);
 }
 
 export function zip<T>(lsts: T[][]) {
@@ -77,8 +77,20 @@ export function typed_keys<K extends PropertyKey>(obj: Record<K, unknown>): Arra
 	return Object.keys(obj) as Array<K>;
 }
 
+export function typed_number_keys<K extends number>(obj: Record<K, unknown>): K[] {
+	return Object.keys(obj).map((v) => Number.parseFloat(v)) as K[];
+}
+
+export function typed_string_entries<K extends string, V>(obj: Record<K, V>): Array<[K, V]> {
+	return Object.entries(obj) as Array<[K, V]>;
+}
+
 export function typed_entries<K extends PropertyKey, V>(obj: Record<K, V>): Array<[K, V]> {
 	return Object.entries(obj) as Array<[K, V]>;
+}
+
+export function typed_number_entries<K extends number, V>(obj: Record<K, V>): Array<[K, V]> {
+	return Object.entries(obj).map(([k, v]) => [Number.parseFloat(k), v]) as Array<[K, V]>;
 }
 
 export function typed_from_entries<K extends PropertyKey, V>(values: [K, V][]): Record<K, V> {
@@ -100,6 +112,13 @@ export function map_keys<K extends PropertyKey, V, NK extends PropertyKey>(
 	return typed_from_entries(typed_entries(obj).map(([k, v]) => [func(k), v]));
 }
 
+export function map_number_keys<K extends number, V, NK extends PropertyKey>(
+	obj: Record<K, V>,
+	func: (v: K) => NK
+): Record<NK, V> {
+	return typed_from_entries(typed_number_entries(obj).map(([k, v]) => [func(k), v]));
+}
+
 export function map_values<K extends PropertyKey, V, NV>(
 	obj: Record<K, V>,
 	func: (v: V) => NV
@@ -112,6 +131,13 @@ export function map_entries<K extends PropertyKey, V, NK extends PropertyKey, NV
 	func: (entries: [K, V]) => [NK, NV]
 ): Record<NK, NV> {
 	return typed_from_entries(typed_entries(obj).map((entry) => func(entry)));
+}
+
+export function map_number_entries<K extends number, V, NK extends PropertyKey, NV>(
+	obj: Record<K, V>,
+	func: (entries: [K, V]) => [NK, NV]
+): Record<NK, NV> {
+	return typed_from_entries(typed_number_entries(obj).map((entry) => func(entry)));
 }
 
 export function cover<T extends Record<PropertyKey, unknown>>(template: T, obj: Partial<T>): T {
