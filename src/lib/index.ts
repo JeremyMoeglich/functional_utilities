@@ -1,8 +1,5 @@
 import { maxBy } from 'lodash-es';
 
-export function abs(value: number): number {
-	return Math.abs(value);
-}
 export function all(values: unknown[]): boolean {
 	if (values.length === 0) {
 		return true;
@@ -19,9 +16,6 @@ export function some(values: unknown[]): boolean {
 	return false;
 }
 
-export function divmod(value: number, divider: number): [number, number] {
-	return [Math.floor(value / divider), value % divider];
-}
 export function enumerate<T>(values: T[]): [number, T][] {
 	return values.map((v, i) => [i, v]);
 }
@@ -153,4 +147,28 @@ export function cover<T extends Record<PropertyKey, unknown>>(template: T, obj: 
 export function pass_back<A>(value: A, func: (v: A) => unknown): A {
 	func(value);
 	return value;
+}
+
+export function final_join(
+	lst: ReadonlyArray<string>,
+	default_seperator: string,
+	final_seperator: string
+): string {
+	if (lst.length === 1) {
+		return lst[0];
+	} else if (lst.length === 0) {
+		return '';
+	} else {
+		return (
+			(lst.length === 2 ? '' : lst.slice(0, -2).join(default_seperator) + default_seperator) +
+			lst.slice(-2).join(final_seperator)
+		);
+	}
+}
+
+export function hasProperty<X, Y extends PropertyKey>(
+	obj: X,
+	prop: Y
+): obj is X & Record<Y, unknown> {
+	return Object.prototype.hasOwnProperty.call(obj, prop);
 }

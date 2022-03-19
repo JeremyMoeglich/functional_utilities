@@ -11,11 +11,12 @@ import {
 	some,
 	enumerate,
 	pass_back,
-	map_entries,
 	map_values,
 	map_keys,
 	map_number_entries,
-	map_number_keys
+	map_number_keys,
+	final_join,
+	hasProperty
 } from '../src/lib/index';
 import { assert, it } from 'vitest';
 
@@ -166,7 +167,21 @@ it('Map_entries', () => {
 		{ 0: 9, 4: 6, 6: 2 }
 	);
 	assert.deepEqual(
-		map_values({}, () => undefined),
+		map_number_entries({}, () => undefined),
 		{}
 	);
+});
+
+it('Final Join', () => {
+	assert.equal(final_join(['1', '2', '3', '4'], ', ', ' and '), '1, 2, 3 and 4');
+	assert.equal(final_join([], ', ', ' and '), '');
+	assert.equal(final_join(['1', '2'], ', ', ' and '), '1 and 2');
+	assert.equal(final_join(['1'], ', ', ' and '), '1');
+});
+
+it('Has Property', () => {
+	assert.equal(hasProperty({ 2: 'test', 5: 'ok' }, 'test'), false);
+	assert.equal(hasProperty({ 2: 'test', 5: 'ok' }, 2), true);
+	assert.equal(hasProperty({}, 2), false);
+	assert.equal(hasProperty({ 2: 'test', ok: 'ok' }, 'ok'), true);
 });
