@@ -5,7 +5,6 @@ import {
 	set_empty,
 	apply,
 	multi_apply,
-	abs,
 	cover,
 	all,
 	some,
@@ -92,12 +91,6 @@ it('MultiApply', () => {
 		18
 	);
 }, 1000);
-
-it('Abs', () => {
-	assert.equal(abs(-3), 3);
-	assert.equal(abs(0), 0);
-	assert.equal(abs(7), 7);
-});
 
 it('Cover', () => {
 	assert.deepEqual(cover({ x: 3, n: 4, p: 'Test' }, { n: 7 }), { x: 3, n: 7, p: 'Test' });
