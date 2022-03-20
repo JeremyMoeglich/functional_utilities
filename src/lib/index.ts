@@ -1,25 +1,5 @@
 import { maxBy } from 'lodash-es';
 
-export function all(values: unknown[]): boolean {
-	if (values.length === 0) {
-		return true;
-	} else {
-		return values.reduce<boolean>((a, b) => !!a && !!b, !!values[0]);
-	}
-}
-export function some(values: unknown[]): boolean {
-	for (const value of values) {
-		if (value) {
-			return true;
-		}
-	}
-	return false;
-}
-
-export function enumerate<T>(values: T[]): [number, T][] {
-	return values.map((v, i) => [i, v]);
-}
-
 export function range(arg1: number, arg2: number | undefined = undefined): Array<number> {
 	if (!arg2) {
 		arg2 = arg1;

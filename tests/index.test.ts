@@ -6,9 +6,6 @@ import {
 	apply,
 	multi_apply,
 	cover,
-	all,
-	some,
-	enumerate,
 	pass_back,
 	map_values,
 	map_keys,
@@ -95,32 +92,6 @@ it('MultiApply', () => {
 it('Cover', () => {
 	assert.deepEqual(cover({ x: 3, n: 4, p: 'Test' }, { n: 7 }), { x: 3, n: 7, p: 'Test' });
 	assert.deepEqual(cover({ x: 3, n: 4, p: 'Test' }, { x: 7, p: 'ok' }), { x: 7, n: 4, p: 'ok' });
-});
-
-it('All', () => {
-	assert.equal(all(['test', 'ok', 'false']), true);
-	assert.equal(all(['test', 'ok', '', 56]), false);
-	assert.equal(all([]), true);
-	assert.equal(all([false]), false);
-	assert.equal(all([true, false, true]), false);
-});
-
-it('Some', () => {
-	assert.equal(some(['test', 'ok', 'false']), true);
-	assert.equal(some(['test', 'ok', '', 56]), true);
-	assert.equal(some([]), false);
-	assert.equal(some([false]), false);
-	assert.equal(some([true, false, true]), true);
-	assert.equal(some([false, false, 0, '']), false);
-});
-
-it('Enumerate', () => {
-	assert.deepEqual(enumerate(['test', 6, false]), [
-		[0, 'test'],
-		[1, 6],
-		[2, false]
-	]);
-	assert.deepEqual(enumerate([]), []);
 });
 
 it('Pass_back', () => {
