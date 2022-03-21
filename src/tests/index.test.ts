@@ -13,7 +13,7 @@ import {
 	map_number_keys,
 	final_join,
 	hasProperty
-} from '../src/lib/index';
+} from '$lib/index';
 import { assert, it } from 'vitest';
 
 it('Pairs', () => {
@@ -61,6 +61,13 @@ it('Range', () => {
 	assert.deepEqual(range(5, 5), []);
 	assert.deepEqual(range(4, 5), [4]);
 	assert.deepEqual(range(0), []);
+	assert.deepEqual(range(-1), [0]);
+	assert.deepEqual(range(1), [0]);
+	assert.deepEqual(range(-4), [0, -1, -2, -3]);
+	assert.deepEqual(range(-4, 4), [-4, -3, -2, -1, 0, 1, 2, 3]);
+	assert.deepEqual(range(-4, -7), [-4, -5, -6]);
+	assert.deepEqual(range(-7, -4), [-7, -6, -5]);
+	assert.deepEqual(range(3, -3), [3, 2, 1, 0, -1, -2]);
 }, 1000);
 
 it('SetEmpty', () => {

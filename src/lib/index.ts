@@ -1,13 +1,11 @@
-import { maxBy } from 'lodash-es';
+import { maxBy, toInteger } from 'lodash-es';
 
 export function range(arg1: number, arg2: number | undefined = undefined): Array<number> {
-	if (!arg2) {
-		arg2 = arg1;
-		arg1 = 0;
-	} else if (arg1 > arg2) {
-		throw 'Arg2 has to be higher or equal compared to Arg1';
-	}
-	return Array.from(Array(arg2 - arg1).keys()).map((v) => v + arg1);
+	const end = arg2 ? arg2 : arg1;
+	const start = arg2 ? arg1 : 0;
+	return Array.from(Array(Math.abs(end - start)).keys()).map(
+		(v) => -v * (toInteger(start > end) - 0.5) * 2 + start
+	);
 }
 
 export function zip<T>(lsts: T[][]) {
