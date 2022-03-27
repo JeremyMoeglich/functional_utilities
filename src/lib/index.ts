@@ -148,5 +148,8 @@ export function hasProperty<X, Y extends PropertyKey>(
 	obj: X,
 	prop: Y
 ): obj is X & Record<Y, unknown> {
+	if (typeof obj !== 'object' || obj === null) {
+		return false;
+	}
 	return Object.prototype.hasOwnProperty.call(obj, prop);
 }
