@@ -144,12 +144,13 @@ export function final_join(
 	}
 }
 
-export function hasProperty<X, Y extends PropertyKey>(
+export function hasProperty<X, Y extends PropertyKey & keyof X>(
 	obj: X,
 	prop: Y
 ): obj is X & Record<Y, unknown> {
-	if (typeof obj !== 'object' || obj === null) {
+	if (typeof obj?.[prop] === 'undefined') {
 		return false;
+	} else {
+		return true;
 	}
-	return Object.prototype.hasOwnProperty.call(obj, prop);
 }

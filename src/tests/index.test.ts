@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
 	zip,
 	range,
@@ -151,8 +152,11 @@ it('Final Join', () => {
 });
 
 it('Has Property', () => {
-	assert.equal(hasProperty({ 2: 'test', 5: 'ok' }, 'test'), false);
+	assert.equal(hasProperty({ 2: 'test', 5: 'ok' }, 'test' as any), false);
 	assert.equal(hasProperty({ 2: 'test', 5: 'ok' }, 2), true);
-	assert.equal(hasProperty({}, 2), false);
+	assert.equal(hasProperty({} as any, 2), false);
 	assert.equal(hasProperty({ 2: 'test', ok: 'ok' }, 'ok'), true);
+	assert.equal(hasProperty(5, 'toString'), true);
+	assert.equal(hasProperty([], 'toString'), true);
+	assert.equal(hasProperty({} as any, 'toString'), true);
 });
