@@ -144,11 +144,12 @@ export function final_join(
 	}
 }
 
-export function hasProperty<X, Y extends PropertyKey & keyof X>(
+export function hasProperty<X, Y extends PropertyKey>(
 	obj: X,
 	prop: Y
 ): obj is X & Record<Y, unknown> {
-	if (typeof obj?.[prop] === 'undefined') {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	if (typeof obj?.[prop as any] === 'undefined') {
 		return false;
 	} else {
 		return true;
