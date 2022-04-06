@@ -155,3 +155,20 @@ export function hasProperty<X, Y extends PropertyKey>(
 		return true;
 	}
 }
+
+export function Set_delete<T>(set: Set<T>, value: T): boolean {
+	if (set.has(value)) {
+		set.delete(value);
+		return true;
+	} else {
+		let found = false;
+		for (const v of set) {
+			if (v === value) {
+				set.delete(v);
+				found = true;
+				break;
+			}
+		}
+		return found;
+	}
+}
