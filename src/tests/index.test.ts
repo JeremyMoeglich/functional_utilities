@@ -13,7 +13,8 @@ import {
 	map_number_entries,
 	map_number_keys,
 	final_join,
-	hasProperty
+	hasProperty,
+	Set_delete
 } from '$lib/index';
 import { assert, it } from 'vitest';
 
@@ -160,3 +161,16 @@ it('Has Property', () => {
 	assert.equal(hasProperty([], 'toString'), true);
 	assert.equal(hasProperty({} as unknown, 'toString'), true);
 });
+
+it('Set Delete', () => {
+	const obj = new Set([1, 2, 3]);
+	assert.equal(Set_delete(obj, 2), true);
+	assert.isFalse(obj.has(2));
+	assert.isTrue(obj.has(1));
+	assert.equal(Set_delete(obj, 2), false);
+	assert.equal(Set_delete(obj, 1), true);
+	assert.equal(Set_delete(obj, 1), false);
+	const obj2 = new Set([{ x: 1 }, { x: 2 }, { x: 3 }]);
+	assert.equal(Set_delete(obj2, { x: 2 }), true);
+	assert.isFalse(obj2.has({ x: 2 }));
+})

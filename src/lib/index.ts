@@ -1,4 +1,4 @@
-import { maxBy, toInteger } from 'lodash-es';
+import { isEqual, maxBy, toInteger } from 'lodash-es';
 
 export function range(arg1: number, arg2: number | undefined = undefined): Array<number> {
 	const end = arg2 ? arg2 : arg1;
@@ -163,7 +163,7 @@ export function Set_delete<T>(set: Set<T>, value: T): boolean {
 	} else {
 		let found = false;
 		for (const v of set) {
-			if (v === value) {
+			if (isEqual(v, value)) {
 				set.delete(v);
 				found = true;
 				break;
