@@ -172,3 +172,12 @@ export function Set_delete<T>(set: Set<T>, value: T): boolean {
 		return found;
 	}
 }
+
+export function is_json(str: string): boolean {
+	try {
+		JSON.parse(str);
+		return true;
+	} catch (e) {
+		return false;
+	}
+}
