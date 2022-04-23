@@ -196,4 +196,37 @@ it('Index by', () => {
 		'2': objs[1],
 		'3': objs[2]
 	});
+
+	interface Asset<T extends string> {
+		id: T;
+		name: string;
+		note: string;
+		image: string;
+	}
+
+	const objs2: ReadonlyArray<Asset<'1' | '2' | '3'>> = [
+		{
+			id: '1',
+			name: 'A',
+			note: '1',
+			image: '1'
+		},
+		{
+			id: '2',
+			name: 'B',
+			note: '2',
+			image: '2'
+		},
+		{
+			id: '3',
+			name: 'C',
+			note: '3',
+			image: '3'
+		}
+	] as const;
+	assert.deepEqual(index_by(objs2, 'id'), {
+		'1': objs2[0],
+		'2': objs2[1],
+		'3': objs2[2]
+	});
 });

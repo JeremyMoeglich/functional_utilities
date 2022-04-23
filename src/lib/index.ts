@@ -182,9 +182,9 @@ export function is_json(str: string): boolean {
 	}
 }
 
-export function index_by<
-	K extends string,
-	T extends Record<K, string> & Omit<Record<string, unknown>, K>
->(arr: ReadonlyArray<T>, key: K): Record<T[K], T> {
+export function index_by<K extends string, T extends Record<K, string> & object>(
+	arr: ReadonlyArray<T>,
+	key: K
+): Record<T[K], T> {
 	return typed_from_entries(arr.map((v) => [v[key], v]));
 }
