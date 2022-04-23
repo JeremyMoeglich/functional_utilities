@@ -14,7 +14,8 @@ import {
 	map_number_keys,
 	final_join,
 	hasProperty,
-	Set_delete
+	Set_delete,
+	index_by
 } from '$lib/index';
 import { assert, it } from 'vitest';
 
@@ -173,4 +174,26 @@ it('Set Delete', () => {
 	const obj2 = new Set([{ x: 1 }, { x: 2 }, { x: 3 }]);
 	assert.equal(Set_delete(obj2, { x: 2 }), true);
 	assert.isFalse(obj2.has({ x: 2 }));
-})
+});
+
+it('Index by', () => {
+	const objs = [
+		{
+			id: '1',
+			name: 'A'
+		},
+		{
+			id: '2',
+			name: 'B'
+		},
+		{
+			id: '3',
+			name: 'C'
+		}
+	] as const;
+	assert.deepEqual(index_by(objs, 'id'), {
+		'1': objs[0],
+		'2': objs[1],
+		'3': objs[2]
+	});
+});
