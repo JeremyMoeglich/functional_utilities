@@ -53,15 +53,15 @@ export function typed_number_keys<K extends number>(obj: Record<K, unknown>): K[
 	return Object.keys(obj).map((v) => Number.parseFloat(v)) as K[];
 }
 
-export function typed_string_entries<K extends string, V>(obj: Record<K, V>): Array<[K, V]> {
+export function typed_string_entries<K extends string, V>(obj: Partial<Record<K, V>>): Array<[K, V]> {
 	return Object.entries(obj) as Array<[K, V]>;
 }
 
-export function typed_entries<K extends PropertyKey, V>(obj: Record<K, V>): Array<[K, V]> {
+export function typed_entries<K extends PropertyKey, V>(obj: Partial<Record<K, V>>): Array<[K, V]> {
 	return Object.entries(obj) as Array<[K, V]>;
 }
 
-export function typed_number_entries<K extends number, V>(obj: Record<K, V>): Array<[K, V]> {
+export function typed_number_entries<K extends number, V>(obj: Partial<Record<K, V>>): Array<[K, V]> {
 	return Object.entries(obj).map(([k, v]) => [Number.parseFloat(k), v]) as Array<[K, V]>;
 }
 
