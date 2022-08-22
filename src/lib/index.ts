@@ -192,3 +192,8 @@ export function index_by<K extends string, T extends Record<K, string> & object>
 ): Record<T[K], T> {
 	return typed_from_entries(arr.map((v) => [v[key], v]));
 }
+
+
+export function error(message = "Unknown Error"): never {
+	throw new Error(message);
+}
