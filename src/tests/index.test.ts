@@ -13,7 +13,6 @@ import {
 	map_number_entries,
 	map_number_keys,
 	final_join,
-	hasProperty,
 	Set_delete,
 	index_by
 } from '$lib/index';
@@ -153,15 +152,6 @@ it('Final Join', () => {
 	assert.equal(final_join(['1'], ', ', ' and '), '1');
 });
 
-it('Has Property', () => {
-	assert.equal(hasProperty({ 2: 'test', 5: 'ok' }, 'test' as any), false);
-	assert.equal(hasProperty({ 2: 'test', 5: 'ok' }, 2), true);
-	assert.equal(hasProperty({} as unknown, 2), false);
-	assert.equal(hasProperty({ 2: 'test', ok: 'ok' }, 'ok'), true);
-	assert.equal(hasProperty(5, 'toString'), true);
-	assert.equal(hasProperty([], 'toString'), true);
-	assert.equal(hasProperty({} as unknown, 'toString'), true);
-});
 
 it('Set Delete', () => {
 	const obj = new Set([1, 2, 3]);

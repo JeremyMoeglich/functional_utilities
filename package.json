@@ -1,6 +1,6 @@
 {
 	"name": "functional-utilities",
-	"version": "1.16.1",
+	"version": "1.17.0",
 	"scripts": {
 		"dev": "svelte-kit dev",
 		"build": "npm run test && svelte-kit build",
