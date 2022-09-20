@@ -4,7 +4,7 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "npm run test && vite build",
-		"package": "npm run test && vite package",
+		"package": "npm run test && svelte-package package",
 		"preview": "vite preview",
 		"test": "vitest run",
 		"check": "svelte-check --tsconfig ./tsconfig.json",
@@ -16,6 +16,7 @@
 		"@playwright/test": "^1.25.2",
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
+		"@sveltejs/package": "1.0.0-next.4",
 		"@types/lodash-es": "^4.17.6",
 		"@typescript-eslint/eslint-plugin": "^5.38.0",
 		"@typescript-eslint/parser": "^5.38.0",
