@@ -148,7 +148,6 @@ export function final_join(
 	}
 }
 
-
 export function Set_delete<T>(set: Set<T>, value: T): boolean {
 	if (set.has(value)) {
 		set.delete(value);
@@ -182,7 +181,10 @@ export function index_by<K extends string, T extends Record<K, string> & object>
 	return typed_from_entries(arr.map((v) => [v[key], v]));
 }
 
-
-export function error(message = "Unknown Error"): never {
+export function error(message = 'Unknown Error'): never {
 	throw new Error(message);
+}
+
+export function pipe<A, B>(value: A, func: (v: A) => B): B {
+	return func(value);
 }
