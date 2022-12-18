@@ -1,6 +1,6 @@
 {
 	"name": "functional-utilities",
-	"version": "1.18.0",
+	"version": "1.18.1",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "npm run test && vite build",

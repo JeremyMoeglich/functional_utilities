@@ -152,7 +152,6 @@ it('Final Join', () => {
 	assert.equal(final_join(['1'], ', ', ' and '), '1');
 });
 
-
 it('Set Delete', () => {
 	const obj = new Set([1, 2, 3]);
 	assert.equal(Set_delete(obj, 2), true);
