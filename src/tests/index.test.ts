@@ -38,7 +38,6 @@ it('Zip', () => {
 			[5, 7],
 			[6, 9],
 			[8, 0],
-			[2, undefined]
 		]
 	);
 	assert.deepEqual(
@@ -50,7 +49,6 @@ it('Zip', () => {
 			[5, 7],
 			[6, 9],
 			[8, 0],
-			[undefined, 9]
 		]
 	);
 	assert.deepEqual(zip([[1, 2, 3]]), [[1], [2], [3]]);

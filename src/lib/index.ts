@@ -1,4 +1,4 @@
-import { isEqual, maxBy, toInteger } from 'lodash-es';
+import { isEqual, minBy, toInteger } from 'lodash-es';
 
 export function range(arg1: number, arg2: number | undefined = undefined): Array<number> {
 	const end = arg2 ? arg2 : arg1;
@@ -12,7 +12,7 @@ export function zip<T>(lsts: T[][]) {
 	if (lsts.length === 0) {
 		return [];
 	}
-	const max_value = maxBy(lsts, (v) => v.length);
+	const max_value = minBy(lsts, (v) => v.length);
 	if (typeof max_value === 'undefined') {
 		throw 'max value was undefined, this should not happen';
 	}
