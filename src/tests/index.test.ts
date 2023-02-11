@@ -14,7 +14,8 @@ import {
 	map_number_keys,
 	final_join,
 	Set_delete,
-	index_by
+	index_by,
+	tuple_zip
 } from '$lib/index';
 import { assert, it } from 'vitest';
 
@@ -54,6 +55,34 @@ it('Zip', () => {
 	assert.deepEqual(zip([[1, 2, 3]]), [[1], [2], [3]]);
 	assert.deepEqual(zip([]), []);
 }, 1000);
+
+it("TupleZip", () => {
+	assert.deepEqual(
+		tuple_zip([
+			[5, 6, 8, 2],
+			["a", "b", "c"]
+		]),
+		[
+			[5, "a"],
+			[6, "b"],
+			[8, "c"],
+		]
+	);
+	assert.deepEqual(
+		tuple_zip([
+			[5, 6, 8],
+			["a", "b", "c", "d"]
+		]),
+		[
+			[5, "a"],
+			[6, "b"],
+			[8, "c"],
+		]
+	);
+	assert.deepEqual(tuple_zip([[], []]), []);
+}, 1000);
+
+
 
 it('Range', () => {
 	assert.deepEqual(range(6), [0, 1, 2, 3, 4, 5]);

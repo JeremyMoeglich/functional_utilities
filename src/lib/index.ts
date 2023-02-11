@@ -19,6 +19,10 @@ export function zip<T>(lsts: T[][]) {
 	return range(max_value.length).map((i) => lsts.map((lst) => lst[i]));
 }
 
+export function tuple_zip<A, B>(lsts: [A[], B[]]): [A, B][] {
+	return zip(lsts as (A | B)[][]) as [A, B][];
+}
+
 export function pairs<T>(lst: T[]): [T, T][] {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return zip([lst.slice(0, -1), lst.slice(1)]) as any;
