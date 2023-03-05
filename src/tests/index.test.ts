@@ -15,7 +15,8 @@ import {
 	final_join,
 	Set_delete,
 	index_by,
-	tuple_zip
+	tuple_zip,
+	hasProperty
 } from '$lib/index';
 import { assert, it } from 'vitest';
 
@@ -82,7 +83,15 @@ it("TupleZip", () => {
 	assert.deepEqual(tuple_zip([[], []]), []);
 }, 1000);
 
-
+it('Has Property', () => {
+	assert.equal(hasProperty({ 2: 'test', 5: 'ok' }, 'test' as any), false);
+	assert.equal(hasProperty({ 2: 'test', 5: 'ok' }, 2), true);
+	assert.equal(hasProperty({} as unknown, 2), false);
+	assert.equal(hasProperty({ 2: 'test', ok: 'ok' }, 'ok'), true);
+	assert.equal(hasProperty(5, 'toString'), true);
+	assert.equal(hasProperty([], 'toString'), true);
+	assert.equal(hasProperty({} as unknown, 'toString'), true);
+});
 
 it('Range', () => {
 	assert.deepEqual(range(6), [0, 1, 2, 3, 4, 5]);

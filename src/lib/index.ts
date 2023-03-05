@@ -169,6 +169,18 @@ export function Set_delete<T>(set: Set<T>, value: T): boolean {
 	}
 }
 
+export function hasProperty<X, Y extends PropertyKey>(
+	obj: X,
+	prop: Y
+): obj is X & Record<Y, unknown> {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	if (typeof obj?.[prop as any] === 'undefined') {
+		return false;
+	} else {
+		return true;
+	}
+}
+
 export function is_json(str: string): boolean {
 	try {
 		JSON.parse(str);
