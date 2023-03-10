@@ -1,3 +1,3 @@
 # Functional Utilites
 
-A bunch of functions i use often
+A collection of utility functions for TypeScript.
