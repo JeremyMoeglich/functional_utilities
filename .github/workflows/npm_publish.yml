@@ -23,6 +23,6 @@ jobs:
           node-version: '17.x'
           registry-url: 'https://registry.npmjs.org'
       - run: npm run package
-      - run: npm publish ./package
+      - run: npm publish ./dist
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
