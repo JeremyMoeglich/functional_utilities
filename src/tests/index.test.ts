@@ -3,20 +3,19 @@ import {
 	zip,
 	range,
 	pairs,
-	set_empty,
+	object_assign_if_truthy,
+	fold,
 	apply,
-	multi_apply,
 	cover,
 	pass_back,
 	map_values,
-	map_keys,
 	map_number_entries,
 	map_number_keys,
 	final_join,
-	Set_delete,
+	ensure_delete_from_set,
 	index_by,
 	tuple_zip,
-	hasProperty
+	has_property
 } from '$lib/index';
 import { assert, it } from 'vitest';
 
@@ -39,7 +38,7 @@ it('Zip', () => {
 		[
 			[5, 7],
 			[6, 9],
-			[8, 0],
+			[8, 0]
 		]
 	);
 	assert.deepEqual(
@@ -50,47 +49,47 @@ it('Zip', () => {
 		[
 			[5, 7],
 			[6, 9],
-			[8, 0],
+			[8, 0]
 		]
 	);
 	assert.deepEqual(zip([[1, 2, 3]]), [[1], [2], [3]]);
 	assert.deepEqual(zip([]), []);
 }, 1000);
 
-it("TupleZip", () => {
+it('TupleZip', () => {
 	assert.deepEqual(
 		tuple_zip([
 			[5, 6, 8, 2],
-			["a", "b", "c"]
+			['a', 'b', 'c']
 		]),
 		[
-			[5, "a"],
-			[6, "b"],
-			[8, "c"],
+			[5, 'a'],
+			[6, 'b'],
+			[8, 'c']
 		]
 	);
 	assert.deepEqual(
 		tuple_zip([
 			[5, 6, 8],
-			["a", "b", "c", "d"]
+			['a', 'b', 'c', 'd']
 		]),
 		[
-			[5, "a"],
-			[6, "b"],
-			[8, "c"],
+			[5, 'a'],
+			[6, 'b'],
+			[8, 'c']
 		]
 	);
 	assert.deepEqual(tuple_zip([[], []]), []);
 }, 1000);
 
 it('Has Property', () => {
-	assert.equal(hasProperty({ 2: 'test', 5: 'ok' }, 'test' as any), false);
-	assert.equal(hasProperty({ 2: 'test', 5: 'ok' }, 2), true);
-	assert.equal(hasProperty({} as unknown, 2), false);
-	assert.equal(hasProperty({ 2: 'test', ok: 'ok' }, 'ok'), true);
-	assert.equal(hasProperty(5, 'toString'), true);
-	assert.equal(hasProperty([], 'toString'), true);
-	assert.equal(hasProperty({} as unknown, 'toString'), true);
+	assert.equal(has_property({ 2: 'test', 5: 'ok' }, 'test' as any), false);
+	assert.equal(has_property({ 2: 'test', 5: 'ok' }, 2), true);
+	assert.equal(has_property({} as unknown, 2), false);
+	assert.equal(has_property({ 2: 'test', ok: 'ok' }, 'ok'), true);
+	assert.equal(has_property(5, 'toString'), true);
+	assert.equal(has_property([], 'toString'), true);
+	assert.equal(has_property({} as unknown, 'toString'), true);
 });
 
 it('Range', () => {
@@ -110,22 +109,22 @@ it('Range', () => {
 
 it('SetEmpty', () => {
 	const obj = { x: '2' };
-	set_empty(obj, 'x', '');
+	object_assign_if_truthy(obj, 'x', '');
 	assert.isFalse('x' in obj);
-	set_empty(obj, 'x', '5');
+	object_assign_if_truthy(obj, 'x', '5');
 	assert.isTrue('x' in obj);
 }, 1000);
 
-it('Apply', () => {
+it('Fold', () => {
 	assert.equal(
-		apply('2', [1, 2, 3], (v1, v2) => v1 + v2),
+		fold('2', [1, 2, 3], (v1, v2) => v1 + v2),
 		'2123'
 	);
 }, 1000);
 
 it('MultiApply', () => {
 	assert.equal(
-		multi_apply(7, [
+		apply(7, [
 			[1, (v1, v2) => v1 + v2],
 			[2, (v1, v2) => v1 - v2],
 			[3, (v1, v2) => v1 * v2]
@@ -165,7 +164,7 @@ it('Map_keys', () => {
 		{ 14: 2, 8: 6, 0: 7 }
 	);
 	assert.deepEqual(
-		map_keys({}, (n) => n * 2),
+		map_number_keys({}, (n) => n * 2),
 		{}
 	);
 });
@@ -190,14 +189,14 @@ it('Final Join', () => {
 
 it('Set Delete', () => {
 	const obj = new Set([1, 2, 3]);
-	assert.equal(Set_delete(obj, 2), true);
+	assert.equal(ensure_delete_from_set(obj, 2), true);
 	assert.isFalse(obj.has(2));
 	assert.isTrue(obj.has(1));
-	assert.equal(Set_delete(obj, 2), false);
-	assert.equal(Set_delete(obj, 1), true);
-	assert.equal(Set_delete(obj, 1), false);
+	assert.equal(ensure_delete_from_set(obj, 2), false);
+	assert.equal(ensure_delete_from_set(obj, 1), true);
+	assert.equal(ensure_delete_from_set(obj, 1), false);
 	const obj2 = new Set([{ x: 1 }, { x: 2 }, { x: 3 }]);
-	assert.equal(Set_delete(obj2, { x: 2 }), true);
+	assert.equal(ensure_delete_from_set(obj2, { x: 2 }), true);
 	assert.isFalse(obj2.has({ x: 2 }));
 });
 

@@ -28,28 +28,50 @@ export function pairs<T>(lst: T[]): [T, T][] {
 	return zip([lst.slice(0, -1), lst.slice(1)]) as any;
 }
 
-export function set_empty<T>(obj: Record<PropertyKey, T>, key: symbol | number | string, value: T) {
+export function object_assign_if_truthy<T>(
+	obj: Record<PropertyKey, T>,
+	key: symbol | number | string,
+	value: T
+) {
 	if (value) {
 		obj[key] = value;
 	} else {
 		delete obj[key];
 	}
 }
-export function apply<A, B>(value: A, values: Array<B>, func: (value: A, value2: B) => A): A {
+
+export function ensure_delete_from_set<T>(set: Set<T>, value: T): boolean {
+	if (set.has(value)) {
+		set.delete(value);
+		return true;
+	} else {
+		let found = false;
+		for (const v of set) {
+			if (isEqual(v, value)) {
+				set.delete(v);
+				found = true;
+				break;
+			}
+		}
+		return found;
+	}
+}
+
+export function fold<A, B>(value: A, values: Array<B>, func: (value: A, value2: B) => A): A {
 	values.forEach((value2) => {
 		value = func(value, value2);
 	});
 	return value;
 }
 
-export function multi_apply<A, B>(value: A, values: Array<[B, (value: A, value2: B) => A]>): A {
+export function apply<A, B>(value: A, values: Array<[B, (value: A, value2: B) => A]>): A {
 	values.forEach(([value2, func]) => {
 		value = func(value, value2);
 	});
 	return value;
 }
 
-export function typed_keys<K extends PropertyKey>(obj: Record<K, unknown>): Array<K> {
+export function typed_keys<K extends string>(obj: Record<K, unknown>): Array<K> {
 	return Object.keys(obj) as Array<K>;
 }
 
@@ -57,13 +79,7 @@ export function typed_number_keys<K extends number>(obj: Record<K, unknown>): K[
 	return Object.keys(obj).map((v) => Number.parseFloat(v)) as K[];
 }
 
-export function typed_string_entries<K extends string, V>(
-	obj: Partial<Record<K, V>>
-): Array<[K, V]> {
-	return Object.entries(obj) as Array<[K, V]>;
-}
-
-export function typed_entries<K extends PropertyKey, V>(obj: Partial<Record<K, V>>): Array<[K, V]> {
+export function typed_entries<K extends string, V>(obj: Partial<Record<K, V>>): Array<[K, V]> {
 	return Object.entries(obj) as Array<[K, V]>;
 }
 
@@ -77,7 +93,7 @@ export function typed_from_entries<K extends PropertyKey, V>(values: [K, V][]): 
 	return Object.fromEntries(values) as Record<K, V>;
 }
 
-export function nullableobj_to_partial<K extends PropertyKey, V>(
+export function nullableobj_to_partial<K extends string, V>(
 	obj: Record<K, V | null | undefined>
 ): Record<K, V> {
 	return typed_from_entries(
@@ -85,7 +101,7 @@ export function nullableobj_to_partial<K extends PropertyKey, V>(
 	) as Record<K, V>;
 }
 
-export function map_keys<K extends PropertyKey, V, NK extends PropertyKey>(
+export function map_keys<K extends string, V, NK extends string>(
 	obj: Record<K, V>,
 	func: (v: K) => NK
 ): Record<NK, V> {
@@ -99,14 +115,14 @@ export function map_number_keys<K extends number, V, NK extends PropertyKey>(
 	return typed_from_entries(typed_number_entries(obj).map(([k, v]) => [func(k), v]));
 }
 
-export function map_values<K extends PropertyKey, V, NV>(
+export function map_values<K extends string, V, NV>(
 	obj: Record<K, V>,
 	func: (v: V) => NV
 ): Record<K, NV> {
 	return typed_from_entries(typed_entries(obj).map(([k, v]) => [k, func(v)]));
 }
 
-export function map_entries<K extends PropertyKey, V, NK extends PropertyKey, NV>(
+export function map_entries<K extends string, V, NK extends PropertyKey, NV>(
 	obj: Record<K, V>,
 	func: (entries: [K, V]) => [NK, NV]
 ): Record<NK, NV> {
@@ -120,7 +136,7 @@ export function map_number_entries<K extends number, V, NK extends PropertyKey, 
 	return typed_from_entries(typed_number_entries(obj).map((entry) => func(entry)));
 }
 
-export function cover<T extends Record<PropertyKey, unknown>>(template: T, obj: Partial<T>): T {
+export function cover<T extends Record<string, unknown>>(template: T, obj: Partial<T>): T {
 	return map_entries(template, ([k, v]) => {
 		if (k in obj) {
 			return [k, obj[k]];
@@ -130,7 +146,8 @@ export function cover<T extends Record<PropertyKey, unknown>>(template: T, obj: 
 	}) as T;
 }
 
-export function pass_back<A>(value: A, func: (v: A) => unknown | void): A {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function pass_back<A>(value: A, func: (v: A) => any): A {
 	func(value);
 	return value;
 }
@@ -152,24 +169,7 @@ export function final_join(
 	}
 }
 
-export function Set_delete<T>(set: Set<T>, value: T): boolean {
-	if (set.has(value)) {
-		set.delete(value);
-		return true;
-	} else {
-		let found = false;
-		for (const v of set) {
-			if (isEqual(v, value)) {
-				set.delete(v);
-				found = true;
-				break;
-			}
-		}
-		return found;
-	}
-}
-
-export function hasProperty<X, Y extends PropertyKey>(
+export function has_property<X, Y extends PropertyKey>(
 	obj: X,
 	prop: Y
 ): obj is X & Record<Y, unknown> {
@@ -197,10 +197,19 @@ export function index_by<K extends string, T extends Record<K, string> & object>
 	return typed_from_entries(arr.map((v) => [v[key], v]));
 }
 
-export function error(message = 'Unknown Error'): never {
+export function panic(message = 'Unknown Internal Error, caused by "panic"'): never {
 	throw new Error(message);
 }
 
 export function pipe<A, B>(value: A, func: (v: A) => B): B {
 	return func(value);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function fake_use<T>(_value: T): void {
+	// do nothing
+}
+
+export function noop(): void {
+	// do nothing
 }
