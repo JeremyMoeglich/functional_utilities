@@ -15,7 +15,8 @@ import {
 	ensure_delete_from_set,
 	index_by,
 	tuple_zip,
-	has_property
+	has_property,
+	cyclic_pairs
 } from '$lib/index';
 import { assert, it } from 'vitest';
 
@@ -29,6 +30,20 @@ it('Pairs', () => {
 		[9, 0]
 	]);
 }, 1000);
+
+it('Cyclic Pairs', () => {
+	assert.deepEqual(cyclic_pairs([5, 6, 8, 2, 7, 9, 0]), [
+		[5, 6],
+		[6, 8],
+		[8, 2],
+		[2, 7],
+		[7, 9],
+		[9, 0],
+		[0, 5]
+	]);
+}, 1000);
+
+
 it('Zip', () => {
 	assert.deepEqual(
 		zip([

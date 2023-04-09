@@ -28,6 +28,10 @@ export function pairs<T>(lst: T[]): [T, T][] {
 	return zip([lst.slice(0, -1), lst.slice(1)]) as any;
 }
 
+export function cyclic_pairs<T>(lst: T[]): [T, T][] {
+	return pairs(lst.concat(lst[0]));
+}
+
 export function object_assign_if_truthy<T>(
 	obj: Record<PropertyKey, T>,
 	key: symbol | number | string,
