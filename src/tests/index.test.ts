@@ -16,7 +16,8 @@ import {
 	index_by,
 	tuple_zip,
 	has_property,
-	cyclic_pairs
+	cyclic_pairs,
+	unthrow
 } from '$lib/index';
 import { assert, it } from 'vitest';
 
@@ -31,6 +32,17 @@ it('Pairs', () => {
 	]);
 }, 1000);
 
+it('Unthrow', () => {
+	const f = (x: number) => {
+		if (x < 0) {
+			throw new Error('Negative');
+		}
+		return x;
+	};
+	assert.equal(unthrow(() => f(5)), 5);
+	assert.equal(unthrow(() => f(-5)), undefined);
+});
+
 it('Cyclic Pairs', () => {
 	assert.deepEqual(cyclic_pairs([5, 6, 8, 2, 7, 9, 0]), [
 		[5, 6],
@@ -42,7 +54,6 @@ it('Cyclic Pairs', () => {
 		[0, 5]
 	]);
 }, 1000);
-
 
 it('Zip', () => {
 	assert.deepEqual(

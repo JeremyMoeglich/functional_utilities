@@ -185,13 +185,16 @@ export function has_property<X, Y extends PropertyKey>(
 	}
 }
 
-export function is_json(str: string): boolean {
+export function unthrow<X>(func: () => X): X | undefined {
 	try {
-		JSON.parse(str);
-		return true;
-	} catch (e) {
-		return false;
+		return func();
+	} catch (_) {
+		return undefined;
 	}
+}
+
+export function is_json(str: string): boolean {
+	return unthrow(() => JSON.parse(str)) !== undefined;
 }
 
 export function index_by<K extends string, T extends Record<K, string> & object>(
