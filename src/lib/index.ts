@@ -1,5 +1,16 @@
 import { isEqual, minBy, toInteger } from 'lodash-es';
 
+/**
+ * Creates a range of numbers between two provided values, or from 0 to a single provided value.
+ * 
+ * @example
+ * range(5); // Returns [0, 1, 2, 3, 4]
+ * range(3, 5); // Returns [3, 4]
+ * 
+ * @param {number} arg1 - The start or end of the range depending on whether arg2 is defined.
+ * @param {number} [arg2] - The end of the range. If not defined, arg1 is taken as end and start is 0.
+ * @returns {Array<number>} - An array of numbers in the specified range.
+ */
 export function range(arg1: number, arg2: number | undefined = undefined): Array<number> {
 	const end = arg2 ? arg2 : arg1;
 	const start = arg2 ? arg1 : 0;
@@ -8,6 +19,17 @@ export function range(arg1: number, arg2: number | undefined = undefined): Array
 	);
 }
 
+/**
+ * Zips together multiple lists into a single list of tuples.
+ * 
+ * @example
+ * zip([[1,2,3], ['a','b','c']]); // Returns [[1, 'a'], [2, 'b'], [3, 'c']]
+ * 
+ * @template T - The type of elements in the input lists.
+ * @param {T[][]} lsts - An array of arrays to be zipped.
+ * @returns {Array<Array<T>>} - An array of tuples where each tuple contains elements at corresponding indices from the input arrays.
+ * @throws {string} If minimum length of input arrays cannot be determined.
+ */
 export function zip<T>(lsts: T[][]) {
 	if (lsts.length === 0) {
 		return [];
@@ -19,19 +41,63 @@ export function zip<T>(lsts: T[][]) {
 	return range(max_value.length).map((i) => lsts.map((lst) => lst[i]));
 }
 
+/**
+ * Creates a tuple from two input lists.
+ * 
+ * @example
+ * tuple_zip([['a', 'b'], [1, 2]]); // Returns [['a', 1], ['b', 2]]
+ * 
+ * @template A - The type of elements in the first list.
+ * @template B - The type of elements in the second list.
+ * @param {[A[], B[]]} lsts - An array of two lists to be zipped into a list of tuples.
+ * @returns {[A, B][]} - A list of tuples where each tuple contains elements at corresponding indices from the input lists.
+ */
 export function tuple_zip<A, B>(lsts: [A[], B[]]): [A, B][] {
 	return zip(lsts as (A | B)[][]) as [A, B][];
 }
 
+/**
+ * Pairs the consecutive elements of a given list.
+ * 
+ * @example
+ * pairs([1, 2, 3, 4]); // Returns [[1, 2], [2, 3], [3, 4]]
+ * 
+ * @template T - The type of elements in the input list.
+ * @param {T[]} lst - An array to be paired.
+ * @returns {[T, T][]} - An array of tuples where each tuple contains two consecutive elements from the input array.
+ */
 export function pairs<T>(lst: T[]): [T, T][] {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	return zip([lst.slice(0, -1), lst.slice(1)]) as any;
 }
 
+/**
+ * Cyclically pairs the elements of a given list.
+ * 
+ * @example
+ * cyclic_pairs([1, 2, 3, 4]); // Returns [[1, 2], [2, 3], [3, 4], [4, 1]]
+ * 
+ * @template T - The type of elements in the input list.
+ * @param {T[]} lst - An array to be cyclically paired.
+ * @returns {[T, T][]} - An array of tuples where each tuple contains two consecutive elements from the input array, including a pair of the last and first elements.
+ */
 export function cyclic_pairs<T>(lst: T[]): [T, T][] {
 	return pairs(lst.concat(lst[0]));
 }
 
+/**
+ * Updates an object property if the new value is truthy, otherwise deletes the property.
+ * 
+ * @example
+ * let obj = { key: "value" };
+ * object_assign_if_truthy(obj, "key", false); // obj becomes {}
+ * 
+ * @template T - The type of the property value.
+ * @param {Record<PropertyKey, T>} obj - The object to update.
+ * @param {symbol | number | string} key - The property key.
+ * @param {T} value - The new value.
+ * @returns {void}
+ */
 export function object_assign_if_truthy<T>(
 	obj: Record<PropertyKey, T>,
 	key: symbol | number | string,
@@ -44,6 +110,18 @@ export function object_assign_if_truthy<T>(
 	}
 }
 
+/**
+ * Deletes a specific value from a Set, even if it's not the same reference.
+ * 
+ * @example
+ * let set = new Set([{a: 1}, {b: 2}]);
+ * ensure_delete_from_set(set, {a: 1}); // set becomes new Set([{b: 2}])
+ * 
+ * @template T - The type of the set values.
+ * @param {Set<T>} set - The Set to delete from.
+ * @param {T} value - The value to delete.
+ * @returns {boolean} - Whether the value was found and deleted.
+ */
 export function ensure_delete_from_set<T>(set: Set<T>, value: T): boolean {
 	if (set.has(value)) {
 		set.delete(value);
@@ -61,6 +139,19 @@ export function ensure_delete_from_set<T>(set: Set<T>, value: T): boolean {
 	}
 }
 
+/**
+ * Folds a list of values into a single value using a provided reducer function.
+ * 
+ * @example
+ * fold(0, [1, 2, 3, 4, 5], (sum, val) => sum + val); // Returns 15
+ * 
+ * @template A - The type of the initial and final value.
+ * @template B - The type of the list values.
+ * @param {A} value - The initial value.
+ * @param {B[]} values - The list of values to fold.
+ * @param {(value: A, value2: B) => A} func - The reducer function.
+ * @returns {A} - The final value after applying the reducer to all values.
+ */
 export function fold<A, B>(value: A, values: Array<B>, func: (value: A, value2: B) => A): A {
 	values.forEach((value2) => {
 		value = func(value, value2);
@@ -68,6 +159,18 @@ export function fold<A, B>(value: A, values: Array<B>, func: (value: A, value2: 
 	return value;
 }
 
+/**
+ * Applies a list of functions to a single value.
+ * 
+ * @example
+ * apply(2, [[3, (a, b) => a * b], [5, (a, b) => a - b]]); // Returns 1
+ * 
+ * @template A - The type of the initial and final value.
+ * @template B - The type of the additional parameter for each function.
+ * @param {A} value - The initial value.
+ * @param {Array<[B, (value: A, value2: B) => A]>} values - The list of functions with their additional parameters.
+ * @returns {A} - The final value after applying all functions.
+ */
 export function apply<A, B>(value: A, values: Array<[B, (value: A, value2: B) => A]>): A {
 	values.forEach(([value2, func]) => {
 		value = func(value, value2);
@@ -75,28 +178,93 @@ export function apply<A, B>(value: A, values: Array<[B, (value: A, value2: B) =>
 	return value;
 }
 
+/**
+ * Extracts the keys from an object with the keys coerced into type `K`.
+ * 
+ * @example
+ * typed_keys({ a: 1, b: 2 }); // Returns ["a", "b"]
+ * 
+ * @template K - The type of the keys.
+ * @param {Record<K, unknown>} obj - The object from which to extract keys.
+ * @returns {Array<K>} - An array of keys from the object.
+ */
 export function typed_keys<K extends string>(obj: Record<K, unknown>): Array<K> {
 	return Object.keys(obj) as Array<K>;
 }
 
+/**
+ * Extracts the keys from an object with the keys coerced into type `K` and parsed to numbers.
+ * 
+ * @example
+ * typed_number_keys({ '1': "a", '2': "b" }); // Returns [1, 2]
+ * 
+ * @template K - The type of the keys.
+ * @param {Record<K, unknown>} obj - The object from which to extract keys.
+ * @returns {K[]} - An array of keys from the object, parsed to numbers.
+ */
 export function typed_number_keys<K extends number>(obj: Record<K, unknown>): K[] {
 	return Object.keys(obj).map((v) => Number.parseFloat(v)) as K[];
 }
 
+/**
+ * Extracts entries from an object with the entries coerced into type `[K, V]`.
+ * 
+ * @example
+ * typed_entries({ a: 1, b: 2 }); // Returns [["a", 1], ["b", 2]]
+ * 
+ * @template K - The type of the keys.
+ * @template V - The type of the values.
+ * @param {Partial<Record<K, V>>} obj - The object from which to extract entries.
+ * @returns {Array<[K, V]>} - An array of entries from the object.
+ */
 export function typed_entries<K extends string, V>(obj: Partial<Record<K, V>>): Array<[K, V]> {
 	return Object.entries(obj) as Array<[K, V]>;
 }
 
+/**
+ * Coerces the keys of the entries in an object into numbers, and returns a typed array of entries.
+ * 
+ * @example
+ * typed_number_entries({ '1': "a", '2': "b" }); // Returns [[1, "a"], [2, "b"]]
+ * 
+ * @template K - The type of the keys.
+ * @template V - The type of the values.
+ * @param {Partial<Record<K, V>>} obj - The object from which to extract entries.
+ * @returns {Array<[K, V]>} - An array of entries from the object with keys parsed to numbers.
+ */
 export function typed_number_entries<K extends number, V>(
 	obj: Partial<Record<K, V>>
 ): Array<[K, V]> {
 	return Object.entries(obj).map(([k, v]) => [Number.parseFloat(k), v]) as Array<[K, V]>;
 }
 
+/**
+ * Converts an array of entries into an object with typed keys and values.
+ * 
+ * @example
+ * typed_from_entries([["a", 1], ["b", 2]]); // Returns { a: 1, b: 2 }
+ * 
+ * @template K - The type of the keys.
+ * @template V - The type of the values.
+ * @param {Array<[K, V]>} values - The array of entries to convert.
+ * @returns {Record<K, V>} - The resulting object.
+ */
 export function typed_from_entries<K extends PropertyKey, V>(values: [K, V][]): Record<K, V> {
 	return Object.fromEntries(values) as Record<K, V>;
 }
 
+
+/**
+ * Converts an object with nullable values into one with non-nullable values, excluding any keys that had null or undefined values.
+ * 
+ * @example
+ * nullableobj_to_partial({ a: 1, b: null, c: undefined, d: 2 }); // Returns { a: 1, d: 2 }
+ * 
+ * @template K - The type of the keys.
+ * @template V - The type of the values.
+ * @param {Record<K, V | null | undefined>} obj - The object to convert.
+ * @returns {Record<K, V>} - The resulting object.
+ */
 export function nullableobj_to_partial<K extends string, V>(
 	obj: Record<K, V | null | undefined>
 ): Record<K, V> {
@@ -105,6 +273,19 @@ export function nullableobj_to_partial<K extends string, V>(
 	) as Record<K, V>;
 }
 
+/**
+ * Creates a new object by applying a function to the keys of an existing object.
+ * 
+ * @example
+ * map_keys({ a: 1, b: 2 }, key => key + key); // Returns { aa: 1, bb: 2 }
+ * 
+ * @template K - The type of the original keys.
+ * @template V - The type of the values.
+ * @template NK - The type of the new keys.
+ * @param {Record<K, V>} obj - The object to use as input.
+ * @param {(v: K) => NK} func - The function to apply to the keys.
+ * @returns {Record<NK, V>} - The resulting object.
+ */
 export function map_keys<K extends string, V, NK extends string>(
 	obj: Record<K, V>,
 	func: (v: K) => NK
@@ -112,6 +293,19 @@ export function map_keys<K extends string, V, NK extends string>(
 	return typed_from_entries(typed_entries(obj).map(([k, v]) => [func(k), v]));
 }
 
+/**
+ * Creates a new object by applying a function to the keys of an existing object where keys are numbers.
+ * 
+ * @example
+ * map_number_keys({ 1: "a", 2: "b" }, key => key + key); // Returns { 2: "a", 4: "b" }
+ * 
+ * @template K - The type of the original keys.
+ * @template V - The type of the values.
+ * @template NK - The type of the new keys.
+ * @param {Record<K, V>} obj - The object to use as input.
+ * @param {(v: K) => NK} func - The function to apply to the keys.
+ * @returns {Record<NK, V>} - The resulting object.
+ */
 export function map_number_keys<K extends number, V, NK extends PropertyKey>(
 	obj: Record<K, V>,
 	func: (v: K) => NK
@@ -119,6 +313,19 @@ export function map_number_keys<K extends number, V, NK extends PropertyKey>(
 	return typed_from_entries(typed_number_entries(obj).map(([k, v]) => [func(k), v]));
 }
 
+/**
+ * Creates a new object by applying a function to the values of an existing object.
+ * 
+ * @example
+ * map_values({ a: 1, b: 2 }, value => value * value); // Returns { a: 1, b: 4 }
+ * 
+ * @template K - The type of the keys.
+ * @template V - The type of the original values.
+ * @template NV - The type of the new values.
+ * @param {Record<K, V>} obj - The object to use as input.
+ * @param {(v: V) => NV} func - The function to apply to the values.
+ * @returns {Record<K, NV>} - The resulting object.
+ */
 export function map_values<K extends string, V, NV>(
 	obj: Record<K, V>,
 	func: (v: V) => NV
@@ -126,6 +333,20 @@ export function map_values<K extends string, V, NV>(
 	return typed_from_entries(typed_entries(obj).map(([k, v]) => [k, func(v)]));
 }
 
+/**
+ * Creates a new object by applying a function to the entries of an existing object.
+ * 
+ * @example
+ * map_entries({ a: 1, b: 2 }, ([k, v]) => [k + k, v * v]); // Returns { aa: 1, bb: 4 }
+ * 
+ * @template K - The type of the original keys.
+ * @template V - The type of the original values.
+ * @template NK - The type of the new keys.
+ * @template NV - The type of the new values.
+ * @param {Record<K, V>} obj - The object to use as input.
+ * @param {(entries: [K, V]) => [NK, NV]} func - The function to apply to the entries.
+ * @returns {Record<NK, NV>} - The resulting object.
+ */
 export function map_entries<K extends string, V, NK extends PropertyKey, NV>(
 	obj: Record<K, V>,
 	func: (entries: [K, V]) => [NK, NV]
@@ -133,6 +354,20 @@ export function map_entries<K extends string, V, NK extends PropertyKey, NV>(
 	return typed_from_entries(typed_entries(obj).map((entry) => func(entry)));
 }
 
+/**
+ * Creates a new object by applying a function to the entries of an existing object where keys are numbers.
+ * 
+ * @example
+ * map_number_entries({ 1: "a", 2: "b" }, ([k, v]) => [k + k, v + v]); // Returns { 2: "aa", 4: "bb" }
+ * 
+ * @template K - The type of the original keys.
+ * @template V - The type of the original values.
+ * @template NK - The type of the new keys.
+ * @template NV - The type of the new values.
+ * @param {Record<K, V>} obj - The object to use as input.
+ * @param {(entries: [K, V]) => [NK, NV]} func - The function to apply to the entries.
+ * @returns {Record<NK, NV>} - The resulting object.
+ */
 export function map_number_entries<K extends number, V, NK extends PropertyKey, NV>(
 	obj: Record<K, V>,
 	func: (entries: [K, V]) => [NK, NV]
@@ -140,6 +375,19 @@ export function map_number_entries<K extends number, V, NK extends PropertyKey, 
 	return typed_from_entries(typed_number_entries(obj).map((entry) => func(entry)));
 }
 
+/**
+ * Overlays properties from one object onto another, based on a template object.
+ * 
+ * @example
+ * const template = { a: 1, b: 2, c: 3 };
+ * const obj = { a: 10, c: 30 };
+ * cover(template, obj); // Returns { a: 10, b: 2, c: 30 }
+ * 
+ * @template T - The type of the template object.
+ * @param {T} template - The template object.
+ * @param {Partial<T>} obj - The object with properties to overlay onto the template.
+ * @returns {T} - The resulting object.
+ */
 export function cover<T extends Record<string, unknown>>(template: T, obj: Partial<T>): T {
 	return map_entries(template, ([k, v]) => {
 		if (k in obj) {
@@ -150,12 +398,36 @@ export function cover<T extends Record<string, unknown>>(template: T, obj: Parti
 	}) as T;
 }
 
+/**
+ * Applies a function to a value and returns the original value.
+ * 
+ * @example
+ * const value = 5;
+ * const newValue = pass_back(value, (v) => console.log(v * v)); // Logs 25 and returns 5
+ * 
+ * @template A - The type of the value.
+ * @param {A} value - The value to use.
+ * @param {(v: A) => any} func - The function to apply to the value.
+ * @returns {A} - The original value.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function pass_back<A>(value: A, func: (v: A) => any): A {
 	func(value);
 	return value;
 }
 
+/**
+ * Joins an array of strings into one string with a default separator and a final separator.
+ * 
+ * @example
+ * const arr = ['Apple', 'Banana', 'Cherry'];
+ * final_join(arr, ', ', ' and '); // Returns 'Apple, Banana and Cherry'
+ * 
+ * @param {ReadonlyArray<string>} lst - The array of strings to join.
+ * @param {string} default_seperator - The separator to use between all elements except the last two.
+ * @param {string} final_seperator - The separator to use between the last two elements.
+ * @returns {string} - The resulting string.
+ */
 export function final_join(
 	lst: ReadonlyArray<string>,
 	default_seperator: string,
@@ -173,6 +445,20 @@ export function final_join(
 	}
 }
 
+/**
+ * Checks if an object has a certain property.
+ * 
+ * @example
+ * const obj = { a: 1, b: 2 };
+ * has_property(obj, 'a'); // Returns true
+ * has_property(obj, 'c'); // Returns false
+ * 
+ * @template X - The type of the object.
+ * @template Y - The type of the property key.
+ * @param {X} obj - The object to check.
+ * @param {Y} prop - The property to check for.
+ * @returns {boolean} - True if the object has the property, false otherwise.
+ */
 export function has_property<X, Y extends PropertyKey>(
 	obj: X,
 	prop: Y
@@ -185,6 +471,17 @@ export function has_property<X, Y extends PropertyKey>(
 	}
 }
 
+/**
+ * Calls a function and returns its result. If an error is thrown during the function call, returns undefined.
+ * 
+ * @example
+ * const result1 = unthrow(() => 10); // Returns 10
+ * const result2 = unthrow(() => { throw new Error('Something went wrong'); }); // Returns undefined
+ * 
+ * @template X - The type of the result returned by the function.
+ * @param {() => X} func - The function to call.
+ * @returns {X | undefined} - The result of the function, or undefined if an error is thrown.
+ */
 export function unthrow<X>(func: () => X): X | undefined {
 	try {
 		return func();
@@ -193,10 +490,36 @@ export function unthrow<X>(func: () => X): X | undefined {
 	}
 }
 
+/**
+ * Checks if a string is valid JSON.
+ * 
+ * @example
+ * const str1 = '{"a":1,"b":2}';
+ * const str2 = 'This is not JSON';
+ * is_json(str1); // Returns true
+ * is_json(str2); // Returns false
+ * 
+ * @param {string} str - The string to check.
+ * @returns {boolean} - True if the string is valid JSON, false otherwise.
+ */
 export function is_json(str: string): boolean {
 	return unthrow(() => JSON.parse(str)) !== undefined;
 }
 
+/**
+ * Creates an object where the keys are the values of a given key in the input objects.
+ * 
+ * @example
+ * const arr = [{id: '1', name: 'Apple'}, {id: '2', name: 'Banana'}];
+ * const key = 'id';
+ * index_by(arr, key); // Returns { '1': {id: '1', name: 'Apple'}, '2': {id: '2', name: 'Banana'} }
+ * 
+ * @template K - The type of the key.
+ * @template T - The type of the objects in the array, which should be an object with a string property of type K.
+ * @param {ReadonlyArray<T>} arr - The array of objects to use.
+ * @param {K} key - The key to use.
+ * @returns {Record<T[K], T>} - The resulting object.
+ */
 export function index_by<K extends string, T extends Record<K, string> & object>(
 	arr: ReadonlyArray<T>,
 	key: K
@@ -204,19 +527,62 @@ export function index_by<K extends string, T extends Record<K, string> & object>
 	return typed_from_entries(arr.map((v) => [v[key], v]));
 }
 
+/**
+ * Throws an error with a given message.
+ * 
+ * @example
+ * undefined ?? panic('This is an error'); // Throws an error with the message 'This is an error'
+ * 
+ * @param {string} [message='Unknown Internal Error, caused by "panic"'] - The message to use for the error.
+ * @throws {Error} - Always throws an error.
+ */
 export function panic(message = 'Unknown Internal Error, caused by "panic"'): never {
 	throw new Error(message);
 }
 
+
+/**
+ * Passes a value to a function and returns the result of the function.
+ * 
+ * @example
+ * const value = 5;
+ * const func = (v) => v * v;
+ * pipe(value, func); // Returns 25
+ * 
+ * @template A - The type of the value.
+ * @template B - The type of the result of the function.
+ * @param {A} value - The value to pass to the function.
+ * @param {(v: A) => B} func - The function to pass the value to.
+ * @returns {B} - The result of the function.
+ */
 export function pipe<A, B>(value: A, func: (v: A) => B): B {
 	return func(value);
 }
 
+/**
+ * Uses a value in a way that does nothing, to avoid unused variable warnings.
+ * 
+ * @example
+ * const value = 5;
+ * fake_use(value); // Does nothing
+ * 
+ * @template T - The type of the value.
+ * @param {T} _value - The value to use.
+ * @returns {void}
+ */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function fake_use<T>(_value: T): void {
 	// do nothing
 }
 
+/**
+ * Does nothing. Useful as a default function.
+ * 
+ * @example
+ * noop(); // Does nothing
+ * 
+ * @returns {void}
+ */
 export function noop(): void {
 	// do nothing
 }
