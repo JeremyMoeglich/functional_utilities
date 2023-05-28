@@ -14,10 +14,11 @@ import {
 	final_join,
 	ensure_delete_from_set,
 	index_by,
-	tuple_zip,
 	has_property,
 	cyclic_pairs,
-	unthrow
+	unthrow,
+	noop,
+	fake_use
 } from '$lib/index';
 import { assert, it } from 'vitest';
 
@@ -39,8 +40,14 @@ it('Unthrow', () => {
 		}
 		return x;
 	};
-	assert.equal(unthrow(() => f(5)), 5);
-	assert.equal(unthrow(() => f(-5)), undefined);
+	assert.equal(
+		unthrow(() => f(5)),
+		5
+	);
+	assert.equal(
+		unthrow(() => f(-5)),
+		undefined
+	);
 });
 
 it('Cyclic Pairs', () => {
@@ -80,14 +87,12 @@ it('Zip', () => {
 	);
 	assert.deepEqual(zip([[1, 2, 3]]), [[1], [2], [3]]);
 	assert.deepEqual(zip([]), []);
-}, 1000);
 
-it('TupleZip', () => {
 	assert.deepEqual(
-		tuple_zip([
+		zip([
 			[5, 6, 8, 2],
 			['a', 'b', 'c']
-		]),
+		] as [number[], string[]]),
 		[
 			[5, 'a'],
 			[6, 'b'],
@@ -95,7 +100,7 @@ it('TupleZip', () => {
 		]
 	);
 	assert.deepEqual(
-		tuple_zip([
+		zip([
 			[5, 6, 8],
 			['a', 'b', 'c', 'd']
 		]),
@@ -105,17 +110,137 @@ it('TupleZip', () => {
 			[8, 'c']
 		]
 	);
-	assert.deepEqual(tuple_zip([[], []]), []);
+	assert.deepEqual(zip([[], []]), []);
+
+	// Test case with empty arrays
+	assert.deepEqual(zip([]), []);
+
+	// Test case with arrays of different lengths
+	assert.deepEqual(
+		zip([
+			[1, 2, 3],
+			[4, 5],
+			[6, 7, 8, 9]
+		]),
+		[
+			[1, 4, 6],
+			[2, 5, 7]
+		]
+	);
+
+	// Test case with arrays of different types
+	assert.deepEqual(
+		zip([
+			[1, 2, 3],
+			['a', 'b', 'c']
+		]),
+		[
+			[1, 'a'],
+			[2, 'b'],
+			[3, 'c']
+		]
+	);
+
+	// Test case with empty inner arrays
+	assert.deepEqual(zip([[1, 2, 3], [], [4, 5, 6]]), []);
+
+	// Test case with a single inner array
+	assert.deepEqual(zip([[1, 2, 3]]), [[1], [2], [3]]);
+
+	// Test case with multiple empty arrays
+	assert.deepEqual(zip([[], [], []]), []);
+
+	// Test case with null values in arrays
+	assert.deepEqual(
+		zip([
+			[null, 2, 3],
+			[4, null, 6]
+		]),
+		[
+			[null, 4],
+			[2, null],
+			[3, 6]
+		]
+	);
 }, 1000);
 
 it('Has Property', () => {
+	// Existing properties on an object
 	assert.equal(has_property({ 2: 'test', 5: 'ok' }, 'test' as any), false);
 	assert.equal(has_property({ 2: 'test', 5: 'ok' }, 2), true);
-	assert.equal(has_property({} as unknown, 2), false);
+	assert.equal(has_property({}, 2), false);
 	assert.equal(has_property({ 2: 'test', ok: 'ok' }, 'ok'), true);
+
+	// Properties on the prototype chain
 	assert.equal(has_property(5, 'toString'), true);
 	assert.equal(has_property([], 'toString'), true);
-	assert.equal(has_property({} as unknown, 'toString'), true);
+	assert.equal(has_property({}, 'toString'), true);
+
+	// Properties on array objects
+	assert.equal(has_property([5, 10, 15], '0'), true);
+	assert.equal(has_property([5, 10, 15], 2), true);
+	assert.equal(has_property([5, 10, 15], 'length'), true);
+
+	// Undefined and null cases
+	assert.equal(has_property(undefined, 'property'), false);
+	assert.equal(has_property(null, 'property'), false);
+
+	// Properties on function objects
+	assert.equal(has_property(noop, 'call'), true);
+
+	// Properties on string objects
+	assert.equal(has_property('test', 'length'), true);
+
+	// Symbol properties
+	const sym = Symbol();
+	assert.equal(has_property({ [sym]: 'value' }, sym), true);
+
+	// Non-existing properties
+	assert.equal(has_property({ a: 1 }, 'b'), false);
+	assert.equal(has_property([1, 2, 3], 5), false);
+
+	{
+		// Type tests
+		const obj1 = {};
+		if (has_property(obj1, 'prop')) {
+			// @ts-expect-error - Error: 'length' does not exist on type 'unknown'
+			fake_use(obj1.prop.length);
+		}
+
+		const obj2: unknown = { prop: 'hello' };
+		if (has_property(obj2, 'prop')) {
+			fake_use(obj2.prop); // No error: the type of 'obj2' is narrowed to { prop: unknown }
+		}
+
+		const obj3 = { prop: 'hello' };
+		if (has_property(obj3, 'prop')) {
+			fake_use(obj3.prop.length); // No error: the type of 'obj3' is narrowed to { prop: unknown }, and 'length' does exist on type 'string'
+		}
+
+		const obj4 = { notProp: 'hello' };
+		if (has_property(obj4, 'prop')) {
+			// @ts-expect-error - Error: Property 'prop' does not exist on type '{ notProp: string; }'.
+			fake_use(obj4.prop.length);
+		}
+
+		const obj5 = 5;
+		if (has_property(obj5, 'toFixed')) {
+			fake_use(obj5.toFixed(2)); // No error: the type of 'obj5' is narrowed to Record<'toFixed', unknown>, and 'toFixed' does exist on type 'number'
+		}
+
+		const obj6 = Object.create({ prop: 'hello' });
+		if (has_property(obj6, 'prop')) {
+			fake_use(obj6.prop.length); // No error: the type of 'obj6' is narrowed to { prop: unknown }, and 'length' does exist on type 'string'
+		}
+
+		const obj7 = [1, 2, 3] as unknown;
+		if (has_property(obj7, '0')) {
+			fake_use(obj7[0]); // No error: the type of 'obj7' is narrowed to Record<'0', unknown>
+		} else {
+			// @ts-expect-error - Error: Property '0' does not exist on type 'unknown[]'.
+			fake_use(obj7[0]);
+		}
+	}
 });
 
 it('Range', () => {
@@ -201,7 +326,7 @@ it('Map_entries', () => {
 		{ 0: 9, 4: 6, 6: 2 }
 	);
 	assert.deepEqual(
-		map_number_entries({}, () => undefined),
+		map_number_entries({}, () => [5, undefined] as never),
 		{}
 	);
 });
