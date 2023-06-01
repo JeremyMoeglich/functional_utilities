@@ -18,7 +18,8 @@ import {
 	cyclic_pairs,
 	unthrow,
 	noop,
-	fake_use
+	fake_use,
+	init_array
 } from '$lib/index';
 import { assert, it } from 'vitest';
 
@@ -48,6 +49,26 @@ it('Unthrow', () => {
 		unthrow(() => f(-5)),
 		undefined
 	);
+});
+
+it('Init Array', () => {
+	assert.deepEqual(init_array(3, [2, 3]), [
+		[3, 3, 3],
+		[3, 3, 3]
+	]);
+	assert.deepEqual(init_array(3, []), 3);
+	assert.deepEqual(init_array('l', [2, 3, 4]), [
+		[
+			['l', 'l', 'l', 'l'],
+			['l', 'l', 'l', 'l'],
+			['l', 'l', 'l', 'l']
+		],
+		[
+			['l', 'l', 'l', 'l'],
+			['l', 'l', 'l', 'l'],
+			['l', 'l', 'l', 'l']
+		]
+	]);
 });
 
 it('Cyclic Pairs', () => {

@@ -58,6 +58,43 @@ export function pairs<T>(lst: T[]): [T, T][] {
 	return zip([lst.slice(0, -1), lst.slice(1)]) as any;
 }
 
+type ArrayType<T, D extends readonly unknown[]> = D extends readonly []
+    ? T
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    : D extends readonly [infer _, ...infer R]
+    ? ArrayType<T[], R>
+    : never;
+
+/**
+ * Initializes a multi-dimensional array with the specified dimensions and initial value.
+ *
+ * @example
+ * init_array(0, [2, 3]); // Returns [[0, 0, 0], [0, 0, 0]]
+ *
+ * @template T - The type of the initial value and elements in the output array.
+ * @template D - The type of dimensions as an array of numbers.
+ * @param {T} initValue - The initial value to be set for each element of the array.
+ * @param {D} dimensions - An array representing the dimensions of the output array.
+ * @returns {ArrayType<T, D>} - A multi-dimensional array of the given dimensions filled with the initial value.
+ */
+export function init_array<T, D extends readonly number[]>(initValue: T, dimensions: readonly [...D]): ArrayType<T, D> {
+    if (dimensions.length === 0) {
+        return initValue as ArrayType<T, D>;
+    }
+
+    const [first, ...rest] = dimensions;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result: any[] = [];
+
+    for (let i = 0; i < first; i++) {
+        result.push(init_array(initValue, rest));
+    }
+
+    return result as ArrayType<T, D>;
+}
+
+
+
 /**
  * Cyclically pairs the elements of a given list.
  *
