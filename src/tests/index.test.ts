@@ -12,7 +12,6 @@ import {
 	map_number_entries,
 	map_number_keys,
 	final_join,
-	ensure_delete_from_set,
 	index_by,
 	has_property,
 	cyclic_pairs,
@@ -357,19 +356,6 @@ it('Final Join', () => {
 	assert.equal(final_join([], ', ', ' and '), '');
 	assert.equal(final_join(['1', '2'], ', ', ' and '), '1 and 2');
 	assert.equal(final_join(['1'], ', ', ' and '), '1');
-});
-
-it('Set Delete', () => {
-	const obj = new Set([1, 2, 3]);
-	assert.equal(ensure_delete_from_set(obj, 2), true);
-	assert.isFalse(obj.has(2));
-	assert.isTrue(obj.has(1));
-	assert.equal(ensure_delete_from_set(obj, 2), false);
-	assert.equal(ensure_delete_from_set(obj, 1), true);
-	assert.equal(ensure_delete_from_set(obj, 1), false);
-	const obj2 = new Set([{ x: 1 }, { x: 2 }, { x: 3 }]);
-	assert.equal(ensure_delete_from_set(obj2, { x: 2 }), true);
-	assert.isFalse(obj2.has({ x: 2 }));
 });
 
 it('Index by', () => {

@@ -1,5 +1,3 @@
-import { isEqual, toInteger } from 'lodash-es';
-
 /**
  * Creates a range of numbers between two provided values, or from 0 to a single provided value.
  *
@@ -12,11 +10,30 @@ import { isEqual, toInteger } from 'lodash-es';
  * @returns {Array<number>} - An array of numbers in the specified range.
  */
 export function range(arg1: number, arg2: number | undefined = undefined): Array<number> {
-	const end = arg2 ? arg2 : arg1;
-	const start = arg2 ? arg1 : 0;
-	return Array.from(Array(Math.abs(end - start)).keys()).map(
-		(v) => -v * (toInteger(start > end) - 0.5) * 2 + start
-	);
+	let start: number, end: number;
+	if (arg2 !== undefined) {
+		start = arg1;
+		end = arg2;
+	} else {
+		start = 0;
+		end = arg1;
+	}
+
+	if (end < start) {
+		// Create array for descending ranges
+		const result = [];
+		for (let i = start; i > end; i--) {
+			result.push(i);
+		}
+		return result;
+	}
+
+	// Create array for ascending ranges
+	const result = [];
+	for (let i = start; i < end; i++) {
+		result.push(i);
+	}
+	return result;
 }
 
 type Zip<T extends unknown[][]> = {
@@ -39,8 +56,19 @@ export function zip<T extends unknown[][]>(lsts: T): Zip<T> {
 		return [];
 	}
 
-	const minLength = Math.min(...lsts.map((lst) => lst.length));
-	return lsts[0].slice(0, minLength).map((_, i) => lsts.map((lst) => lst[i])) as Zip<T>;
+	let minLength = lsts[0].length;
+	for (let i = 1; i < lsts.length; i++) {
+		if (lsts[i].length < minLength) {
+			minLength = lsts[i].length;
+		}
+	}
+
+	const result: unknown[][] = [];
+	for (let i = 0; i < minLength; i++) {
+		result.push(lsts.map((lst) => lst[i]));
+	}
+
+	return result as Zip<T>;
 }
 
 /**
@@ -59,11 +87,11 @@ export function pairs<T>(lst: T[]): [T, T][] {
 }
 
 type ArrayType<T, D extends readonly unknown[]> = D extends readonly []
-    ? T
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    : D extends readonly [infer _, ...infer R]
-    ? ArrayType<T[], R>
-    : never;
+	? T
+	: // eslint-disable-next-line @typescript-eslint/no-unused-vars
+	D extends readonly [infer _, ...infer R]
+	? ArrayType<T[], R>
+	: never;
 
 /**
  * Initializes a multi-dimensional array with the specified dimensions and initial value.
@@ -77,23 +105,24 @@ type ArrayType<T, D extends readonly unknown[]> = D extends readonly []
  * @param {D} dimensions - An array representing the dimensions of the output array.
  * @returns {ArrayType<T, D>} - A multi-dimensional array of the given dimensions filled with the initial value.
  */
-export function init_array<T, D extends readonly number[]>(initValue: T, dimensions: readonly [...D]): ArrayType<T, D> {
-    if (dimensions.length === 0) {
-        return initValue as ArrayType<T, D>;
-    }
+export function init_array<T, D extends readonly number[]>(
+	initValue: T,
+	dimensions: readonly [...D]
+): ArrayType<T, D> {
+	if (dimensions.length === 0) {
+		return initValue as ArrayType<T, D>;
+	}
 
-    const [first, ...rest] = dimensions;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result: any[] = [];
+	const [first, ...rest] = dimensions;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const result: any[] = [];
 
-    for (let i = 0; i < first; i++) {
-        result.push(init_array(initValue, rest));
-    }
+	for (let i = 0; i < first; i++) {
+		result.push(init_array(initValue, rest));
+	}
 
-    return result as ArrayType<T, D>;
+	return result as ArrayType<T, D>;
 }
-
-
 
 /**
  * Cyclically pairs the elements of a given list.
@@ -131,35 +160,6 @@ export function object_assign_if_truthy<T>(
 		obj[key] = value;
 	} else {
 		delete obj[key];
-	}
-}
-
-/**
- * Deletes a specific value from a Set, even if it's not the same reference.
- *
- * @example
- * let set = new Set([{a: 1}, {b: 2}]);
- * ensure_delete_from_set(set, {a: 1}); // set becomes new Set([{b: 2}])
- *
- * @template T - The type of the set values.
- * @param {Set<T>} set - The Set to delete from.
- * @param {T} value - The value to delete.
- * @returns {boolean} - Whether the value was found and deleted.
- */
-export function ensure_delete_from_set<T>(set: Set<T>, value: T): boolean {
-	if (set.has(value)) {
-		set.delete(value);
-		return true;
-	} else {
-		let found = false;
-		for (const v of set) {
-			if (isEqual(v, value)) {
-				set.delete(v);
-				found = true;
-				break;
-			}
-		}
-		return found;
 	}
 }
 
