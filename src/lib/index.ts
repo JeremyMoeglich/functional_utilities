@@ -72,13 +72,14 @@ export function zip<T extends unknown[][]>(lsts: T): Zip<T> {
 }
 
 /**
- * Returns the global variable associated with the provided name if it exists.
+ * Returns the value of a global variable if it exists, or undefined if it does not.
  *
  * @example
- * maybeGlobal('Math'); // Returns the global Math object
+ * maybe_global('window'); // Returns the value of the global variable 'window' if it exists, or undefined if it does not.
  *
- * @param {string} name - The name of the global variable.
- * @returns {any} - The global variable associated with the provided name, or undefined if it doesn't exist.
+ * @template K - The name of the global variable to check.
+ * @param {K} name - The name of the global variable to check.
+ * @returns {(typeof globalThis)[K] | undefined | unknown} - The value of the global variable if it exists, or undefined if it does not. If the name doesn't match any global variables, returns unknown.
  */
 export function maybe_global<K extends string>(
 	name: K
