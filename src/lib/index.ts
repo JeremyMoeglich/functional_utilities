@@ -72,6 +72,21 @@ export function zip<T extends unknown[][]>(lsts: T): Zip<T> {
 }
 
 /**
+ * Returns the global variable associated with the provided name if it exists.
+ *
+ * @example
+ * maybeGlobal('Math'); // Returns the global Math object
+ *
+ * @param {string} name - The name of the global variable.
+ * @returns {any} - The global variable associated with the provided name, or undefined if it doesn't exist.
+ */
+export function maybe_global<K extends string>(
+	name: K
+): K extends keyof typeof globalThis ? (typeof globalThis)[K] | undefined : unknown {
+	return has_property(globalThis, name) ? globalThis[name as keyof typeof globalThis] : undefined;
+}
+
+/**
  * Pairs the consecutive elements of a given list.
  *
  * @example

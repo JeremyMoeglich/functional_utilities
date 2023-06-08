@@ -18,7 +18,8 @@ import {
 	unthrow,
 	noop,
 	fake_use,
-	init_array
+	init_array,
+	maybe_global
 } from '$lib/index';
 import { assert, it } from 'vitest';
 
@@ -183,6 +184,17 @@ it('Zip', () => {
 		]
 	);
 }, 1000);
+
+it('MaybeGlobal', () => {
+	// Define a global variable
+	(global as any).test = 5;
+
+	// Test that the global variable is returned
+	assert.equal(maybe_global('test'), 5);
+
+	const window2: typeof Math | undefined = maybe_global('Math');
+	assert.equal(window2, Math);
+});
 
 it('Has Property', () => {
 	// Existing properties on an object
