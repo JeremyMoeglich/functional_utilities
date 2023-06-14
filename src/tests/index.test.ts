@@ -272,6 +272,13 @@ it('Has Property', () => {
 			// @ts-expect-error - Error: Property '0' does not exist on type 'unknown[]'.
 			fake_use(obj7[0]);
 		}
+
+		// const obj8 = { a: 1, b: 2, c: 3 } as const;
+		// const v = 'b' as string;
+		// if (has_property(obj8, v)) {
+		// 	const o: number = obj8[v]; // No error: the type of 'obj8' is narrowed to { a: 1, b: 2, c: 3 }, and 'b' does exist on type 'typeof obj8'
+		// 	fake_use(o);
+		// } Typescript doesn't support multi property narrowing yet
 	}
 });
 

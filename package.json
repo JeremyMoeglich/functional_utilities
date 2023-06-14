@@ -1,10 +1,10 @@
 {
 	"name": "functional-utilities",
-	"version": "3.2.1",
+	"version": "3.3.0",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "npm run test && vite build",
-		"package": "npm run test && svelte-package package",
+		"build": "npm run test && npm run lint && vite build",
+		"package": "npm run test && npm run lint && svelte-package package",
 		"preview": "vite preview",
 		"test": "vitest run",
 		"check": "svelte-check --tsconfig ./tsconfig.json",

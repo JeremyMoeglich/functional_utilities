@@ -51,7 +51,7 @@ type Zip<T extends unknown[][]> = {
  * @returns {Array<Array<T>>} - An array of tuples where each tuple contains elements at corresponding indices from the input arrays.
  * @throws {string} If minimum length of input arrays cannot be determined.
  */
-export function zip<T extends unknown[][]>(lsts: T): Zip<T> {
+export function zip<T extends unknown[][]>(lsts: [...T]): Zip<T> {
 	if (lsts.length === 0) {
 		return [];
 	}
@@ -521,7 +521,11 @@ export function final_join(
 export function has_property<X, Y extends PropertyKey>(
 	obj: X,
 	prop: Y
-): obj is X & Record<Y, unknown> {
+): obj is X &
+	Record<
+		Y extends keyof X ? Y : keyof X extends never ? Y : keyof X,
+		Y extends keyof X ? X[Y] : unknown
+	> {
 	if (obj === null || obj === undefined) {
 		return false;
 	}
