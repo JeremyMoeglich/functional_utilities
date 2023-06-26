@@ -1,4 +1,34 @@
 /**
+ * Represents a generic array type that requires at least one element.
+ *
+ * @example
+ * let arr: NonEmptyArray<number> = [1, 2, 3]; // This is fine.
+ * arr = []; // This causes a type error.
+ *
+ * @template T - The type of elements in the array.
+ */
+export type NonEmptyArray<T> = [T, ...T[]];
+
+/**
+ * Checks whether a given array is non-empty.
+ *
+ * @example
+ * const arr: number[] = [1, 2, 3];
+ * if (isNonEmptyArray(arr)) {
+ *    console.log("Non-empty array:", arr);
+ * } else {
+ *    console.log("Empty array");
+ * }
+ *
+ * @template T - The type of elements in the input array.
+ * @param {T[]} arr - An array to be checked.
+ * @returns {boolean} - Returns true if the array has at least one element, false otherwise.
+ */
+export function isNonEmptyArray<T>(arr: T[]): arr is NonEmptyArray<T> {
+	return arr.length > 0;
+}
+
+/**
  * Creates a range of numbers between two provided values, or from 0 to a single provided value.
  *
  * @example
@@ -151,6 +181,9 @@ export function init_array<T, D extends readonly number[]>(
  * @returns {[T, T][]} - An array of tuples where each tuple contains two consecutive elements from the input array, including a pair of the last and first elements.
  */
 export function cyclic_pairs<T>(lst: T[]): [T, T][] {
+	if (lst.length === 0) {
+		return [];
+	}
 	return pairs(lst.concat(lst[0]));
 }
 
@@ -549,6 +582,41 @@ export function unthrow<X>(func: () => X): X | undefined {
 	} catch (_) {
 		return undefined;
 	}
+}
+
+/**
+ * Returns the element at the given index in an array, wrapping around to the start or end as necessary.
+ * Returns undefined if the array is empty.
+ *
+ * @example
+ * const arr = ['Apple', 'Banana', 'Cherry'];
+ * at(arr, 2); // Returns 'Cherry'
+ * at(arr, -1); // Returns 'Cherry'
+ * at(arr, 3); // Returns 'Apple'
+ * at(arr, 7); // Returns 'Banana'
+ * at([], 0); // Returns undefined
+ *
+ * @template T - The type of the elements in the array.
+ * @param {ReadonlyArray<T>} arr - The array to retrieve the element from.
+ * @param {number} index - The index to use, which may be negative or greater than the array's length.
+ * @returns {T | undefined} - The element at the given index, accounting for wrap-around, or undefined if the array is empty.
+ */
+export function at<A extends ReadonlyArray<unknown>>(
+	arr: A,
+	index: number
+): A extends NonEmptyArray<infer T> ? T : A extends ReadonlyArray<infer T> ? T | undefined : never {
+	if (arr.length === 0) {
+		return undefined as A extends NonEmptyArray<infer T>
+			? T
+			: A extends ReadonlyArray<infer T>
+			? T | undefined
+			: never;
+	}
+	return arr[((index % arr.length) + arr.length) % arr.length] as A extends NonEmptyArray<infer T>
+		? T
+		: A extends ReadonlyArray<infer T>
+		? T | undefined
+		: never;
 }
 
 /**

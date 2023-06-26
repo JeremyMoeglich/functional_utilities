@@ -19,7 +19,9 @@ import {
 	noop,
 	fake_use,
 	init_array,
-	maybe_global
+	maybe_global,
+	at,
+	isNonEmptyArray
 } from '$lib/index';
 import { assert, it } from 'vitest';
 
@@ -280,6 +282,42 @@ it('Has Property', () => {
 		// 	fake_use(o);
 		// } Typescript doesn't support multi property narrowing yet
 	}
+});
+
+it('At Wrapped', () => {
+	const arr = [1, 2, 3, 4, 5];
+	let r1 = at(arr, 0);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	r1 = undefined;
+	if (!isNonEmptyArray(arr)) {
+		throw new Error('arr is not a non-empty array');
+	}
+	let r2 = at(arr, 0);
+	// @ts-expect-error - A non-empty array is guaranteed to have a first element
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	r2 = undefined;
+	assert.deepEqual(at(arr, 0), 1);
+	assert.deepEqual(at(arr, 1), 2);
+	assert.deepEqual(at(arr, 2), 3);
+	assert.deepEqual(at(arr, 3), 4);
+	assert.deepEqual(at(arr, 4), 5);
+	assert.deepEqual(at(arr, 5), 1);
+	assert.deepEqual(at(arr, 6), 2);
+	assert.deepEqual(at(arr, 7), 3);
+	assert.deepEqual(at(arr, 8), 4);
+	assert.deepEqual(at(arr, 9), 5);
+	assert.deepEqual(at(arr, 10), 1);
+	assert.deepEqual(at(arr, -1), 5);
+	assert.deepEqual(at(arr, -2), 4);
+	assert.deepEqual(at(arr, -3), 3);
+	assert.deepEqual(at(arr, -4), 2);
+	assert.deepEqual(at(arr, -5), 1);
+	assert.deepEqual(at(arr, -6), 5);
+	assert.deepEqual(at(arr, -7), 4);
+	assert.deepEqual(at(arr, -8), 3);
+	assert.deepEqual(at(arr, -9), 2);
+	assert.deepEqual(at(arr, -10), 1);
+	assert.deepEqual(at(arr, -11), 5);
 });
 
 it('Range', () => {
