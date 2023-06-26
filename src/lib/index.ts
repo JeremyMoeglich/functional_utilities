@@ -584,6 +584,12 @@ export function unthrow<X>(func: () => X): X | undefined {
 	}
 }
 
+type NonEmptyDefined<A extends ReadonlyArray<unknown>> = A extends NonEmptyArray<infer T>
+	? T
+	: A extends ReadonlyArray<infer T>
+	? T | undefined
+	: never;
+
 /**
  * Returns the element at the given index in an array, wrapping around to the start or end as necessary.
  * Returns undefined if the array is empty.
@@ -601,22 +607,45 @@ export function unthrow<X>(func: () => X): X | undefined {
  * @param {number} index - The index to use, which may be negative or greater than the array's length.
  * @returns {T | undefined} - The element at the given index, accounting for wrap-around, or undefined if the array is empty.
  */
-export function at<A extends ReadonlyArray<unknown>>(
-	arr: A,
-	index: number
-): A extends NonEmptyArray<infer T> ? T : A extends ReadonlyArray<infer T> ? T | undefined : never {
+export function at<A extends ReadonlyArray<unknown>>(arr: A, index: number): NonEmptyDefined<A> {
 	if (arr.length === 0) {
-		return undefined as A extends NonEmptyArray<infer T>
-			? T
-			: A extends ReadonlyArray<infer T>
-			? T | undefined
-			: never;
+		return undefined as NonEmptyDefined<A>;
 	}
-	return arr[((index % arr.length) + arr.length) % arr.length] as A extends NonEmptyArray<infer T>
-		? T
-		: A extends ReadonlyArray<infer T>
-		? T | undefined
-		: never;
+	return arr[((index % arr.length) + arr.length) % arr.length] as NonEmptyDefined<A>;
+}
+
+/**
+ * @template T - The type of the elements in the array.
+ * @param {T[]} arr - The array to retrieve the element from.
+ * @param {(v: T) => boolean} predicate - The function to test each element of the array.
+ * @param {number} start_index - The index to start the search from, which may be negative or greater than the array's length.
+ * @param {boolean} cyclic - If the search should wrap around to the beginning of the array when reaching the end.
+ * @returns {T | undefined} - The first element that satisfies the provided testing function. Otherwise, undefined.
+ */
+export function find_from<T>(
+	arr: T[],
+	predicate: (v: T) => boolean,
+	start_index: number,
+	cyclic: boolean
+): T | undefined {
+	if (!isNonEmptyArray(arr)) {
+		return undefined;
+	}
+
+	let index = start_index;
+	const end_index = cyclic ? start_index + arr.length : arr.length;
+
+	while (index < end_index) {
+		const value = at(arr, index);
+
+		if (predicate(value)) {
+			return value;
+		}
+
+		index++;
+	}
+
+	return undefined;
 }
 
 /**

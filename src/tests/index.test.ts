@@ -21,7 +21,8 @@ import {
 	init_array,
 	maybe_global,
 	at,
-	isNonEmptyArray
+	isNonEmptyArray,
+	find_from
 } from '$lib/index';
 import { assert, it } from 'vitest';
 
@@ -284,7 +285,7 @@ it('Has Property', () => {
 	}
 });
 
-it('At Wrapped', () => {
+it('At', () => {
 	const arr = [1, 2, 3, 4, 5];
 	let r1 = at(arr, 0);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -318,6 +319,41 @@ it('At Wrapped', () => {
 	assert.deepEqual(at(arr, -9), 2);
 	assert.deepEqual(at(arr, -10), 1);
 	assert.deepEqual(at(arr, -11), 5);
+});
+
+it('FindFrom', () => {
+	assert.deepEqual(
+		find_from([1, 2, 3], (v) => v >= 2, -1, true),
+		3
+	);
+	assert.deepEqual(
+		find_from([1, 2, 3], (v) => v >= 2, 0, true),
+		2
+	);
+	assert.deepEqual(
+		find_from([1, 2, 3], (v) => v >= 2, 1, true),
+		2
+	);
+	assert.deepEqual(
+		find_from([1, 2, 3], (v) => v >= 2, 2, true),
+		3
+	);
+	assert.deepEqual(
+		find_from([1, 2, 3], (v) => v >= 2, 3, true),
+		2
+	);
+	assert.deepEqual(
+		find_from([1, 2, 3], (v) => v >= 2, 3, false),
+		undefined
+	);
+	assert.deepEqual(
+		find_from([1, 2, 3], (v) => v < 2, 1, false),
+		undefined
+	);
+	assert.deepEqual(
+		find_from([1, 2, 3], (v) => v === 4, 1, true),
+		undefined
+	);
 });
 
 it('Range', () => {
