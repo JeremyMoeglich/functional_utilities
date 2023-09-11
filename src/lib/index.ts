@@ -170,6 +170,18 @@ export function init_array<T, D extends readonly number[]>(
 	return result as ArrayType<T, D>;
 }
 
+const cache = new Map<string, unknown>();
+export function cached<T>(func: () => T, key: string): T {
+	if (cache.has(key)) {
+		return cache.get(key) as T;
+	} else {
+		const result = func();
+		cache.set(key, result);
+		return result;
+	}
+}
+
+
 /**
  * Cyclically pairs the elements of a given list.
  *
