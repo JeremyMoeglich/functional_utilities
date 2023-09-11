@@ -38,7 +38,7 @@ it('Pairs', () => {
 	]);
 }, 1000);
 
-it("Cached", () => {
+it('Cached', () => {
 	let x = 5;
 	const impure_function = () => {
 		x++;
@@ -46,10 +46,19 @@ it("Cached", () => {
 	};
 	assert.equal(impure_function(), 6);
 	assert.equal(impure_function(), 7);
-	assert.equal(cached(() => impure_function(), "key1"), 8);
-	assert.equal(cached(() => impure_function(), "key1"), 8);
-	assert.equal(cached(() => impure_function(), "key2"), 9);
-})
+	assert.equal(
+		cached(() => impure_function(), 'key1'),
+		8
+	);
+	assert.equal(
+		cached(() => impure_function(), 'key1'),
+		8
+	);
+	assert.equal(
+		cached(() => impure_function(), 'key2'),
+		9
+	);
+});
 
 it('Unthrow', () => {
 	const f = (x: number) => {

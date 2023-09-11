@@ -181,7 +181,6 @@ export function cached<T>(func: () => T, key: string): T {
 	}
 }
 
-
 /**
  * Cyclically pairs the elements of a given list.
  *
