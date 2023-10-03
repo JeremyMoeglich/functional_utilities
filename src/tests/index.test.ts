@@ -23,7 +23,8 @@ import {
 	maybe_global,
 	at,
 	isNonEmptyArray,
-	find_from
+	find_from,
+	zip_longest
 } from '$lib/index';
 import { assert, it } from 'vitest';
 
@@ -207,6 +208,79 @@ it('Zip', () => {
 			[null, 4],
 			[2, null],
 			[3, 6]
+		]
+	);
+}, 1000);
+
+it('Zip Longest', () => {
+	assert.deepEqual(
+		zip_longest([
+			[5, 6, 8],
+			[7, 9]
+		]),
+		[
+			[5, 7],
+			[6, 9],
+			[8, undefined]
+		]
+	);
+
+	assert.deepEqual(
+		zip_longest([
+			[5, 6],
+			[7, 9, 0]
+		]),
+		[
+			[5, 7],
+			[6, 9],
+			[undefined, 0]
+		]
+	);
+
+	assert.deepEqual(zip_longest([[5, 6, 8], []]), [
+		[5, undefined],
+		[6, undefined],
+		[8, undefined]
+	]);
+
+	assert.deepEqual(
+		zip_longest([
+			[1, 2, 3],
+			[true, false]
+		]),
+		[
+			[1, true],
+			[2, false],
+			[3, undefined]
+		]
+	);
+
+	assert.deepEqual(
+		zip_longest([
+			[1, 2],
+			['a', 'b', 'c']
+		]),
+		[
+			[1, 'a'],
+			[2, 'b'],
+			[undefined, 'c']
+		]
+	);
+
+	// Test case with empty arrays
+	assert.deepEqual(zip_longest([]), []);
+
+	// Test case with arrays of different lengths and types
+	assert.deepEqual(
+		zip_longest([
+			[1, 2],
+			['a', 'b'],
+			[true, false, null]
+		]),
+		[
+			[1, 'a', true],
+			[2, 'b', false],
+			[undefined, undefined, null]
 		]
 	);
 }, 1000);

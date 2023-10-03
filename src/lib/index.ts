@@ -101,6 +101,42 @@ export function zip<T extends unknown[][]>(lsts: [...T]): Zip<T> {
 	return result as Zip<T>;
 }
 
+type ZipLongest<T extends unknown[][]> = {
+	[K in keyof T]: T[K] extends (infer U)[] ? U | undefined : never;
+}[];
+
+/**
+ * Zips together multiple lists into a single list of tuples.
+ * Fills in undefined for shorter lists.
+ *
+ * @example
+ * zip_longest([[1, 2, 3], ['a', 'b']]); // Returns [[1, 'a'], [2, 'b'], [3, undefined]]
+ *
+ * @template T - The type of elements in the input lists.
+ * @param {T[][]} lsts - An array of arrays to be zipped.
+ * @returns {Array<Array<T | undefined>>} - An array of tuples where each tuple contains elements at corresponding indices from the input arrays.
+ * @throws {string} If minimum length of input arrays cannot be determined.
+ */
+export function zip_longest<T extends unknown[][]>(lsts: [...T]): ZipLongest<T> {
+	if (lsts.length === 0) {
+		return [];
+	}
+
+	let maxLength = lsts[0].length;
+	for (let i = 1; i < lsts.length; i++) {
+		if (lsts[i].length > maxLength) {
+			maxLength = lsts[i].length;
+		}
+	}
+
+	const result: unknown[][] = [];
+	for (let i = 0; i < maxLength; i++) {
+		result.push(lsts.map((lst) => (i < lst.length ? lst[i] : undefined)));
+	}
+
+	return result as ZipLongest<T>;
+}
+
 /**
  * Returns the value of a global variable if it exists, or undefined if it does not.
  *
