@@ -156,7 +156,7 @@ export function cycle<T>(arr: T[], n: number, direction: 'left' | 'right'): T[] 
 	if (len === 0) {
 		return [];
 	}
-	
+
 	n = n % len;
 	if (direction === 'right') {
 		n = len - n;
@@ -165,7 +165,6 @@ export function cycle<T>(arr: T[], n: number, direction: 'left' | 'right'): T[] 
 	// Slice, concat, voila!
 	return arr.slice(n).concat(arr.slice(0, n));
 }
-
 
 /**
  * Returns the value of a global variable if it exists, or undefined if it does not.

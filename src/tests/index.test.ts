@@ -60,7 +60,6 @@ describe('cycle', () => {
 	it('Rotation with Zero Shift', () => {
 		assert.deepEqual(cycle([1, 2, 3, 4], 0, 'left'), [1, 2, 3, 4]);
 	}, 1000);
-
 });
 
 it('Cached', () => {

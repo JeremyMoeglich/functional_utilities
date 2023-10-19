@@ -6,7 +6,7 @@
 		"build": "npm run test && npm run lint && vite build",
 		"package": "npm run test && npm run lint && svelte-package package",
 		"preview": "vite preview",
-		"test": "vitest run",
+		"test": "vitest run && npm run check && npm run lint",
 		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --ignore-path .gitignore --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
