@@ -23,9 +23,10 @@ import {
 	maybe_global,
 	at,
 	isNonEmptyArray,
-	find_from
+	find_from,
+	cycle
 } from '$lib/index';
-import { assert, it } from 'vitest';
+import { assert, describe, it } from 'vitest';
 
 it('Pairs', () => {
 	assert.deepEqual(pairs([5, 6, 8, 2, 7, 9, 0]), [
@@ -37,6 +38,29 @@ it('Pairs', () => {
 		[9, 0]
 	]);
 }, 1000);
+
+describe('cycle', () => {
+	it('Basic Left Rotation', () => {
+		assert.deepEqual(cycle([1, 2, 3, 4], 1, 'left'), [2, 3, 4, 1]);
+	}, 1000);
+
+	it('Basic Right Rotation', () => {
+		assert.deepEqual(cycle([1, 2, 3, 4], 1, 'right'), [4, 1, 2, 3]);
+	}, 1000);
+
+	it('Rotation Beyond Length', () => {
+		assert.deepEqual(cycle([1, 2, 3], 4, 'left'), [2, 3, 1]);
+	}, 1000);
+
+	it('Rotation with Zero Length Array', () => {
+		assert.deepEqual(cycle([], 1, 'left'), []);
+	}, 1000);
+
+	it('Rotation with Zero Shift', () => {
+		assert.deepEqual(cycle([1, 2, 3, 4], 0, 'left'), [1, 2, 3, 4]);
+	}, 1000);
+
+});
 
 it('Cached', () => {
 	let x = 5;

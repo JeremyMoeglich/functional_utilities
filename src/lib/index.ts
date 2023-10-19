@@ -102,6 +102,36 @@ export function zip<T extends unknown[][]>(lsts: [...T]): Zip<T> {
 }
 
 /**
+ * Cycles the elements in an array in the specified direction by the given amount.
+ *
+ * @example
+ * cycle([1, 2, 3, 4], 2, 'left'); // Returns [3, 4, 1, 2]
+ * cycle([1, 2, 3, 4], 1, 'right'); // Returns [4, 1, 2, 3]
+ *
+ * @template T - The type of elements in the array.
+ * @param {T[]} arr - The array to cycle.
+ * @param {number} n - The number of positions to cycle the array.
+ * @param {'left' | 'right'} direction - The direction to cycle the array, either "left" or "right".
+ * @returns {T[]} - A new array with elements cycled.
+ * @throws {Error} If the direction is neither 'left' nor 'right'.
+ */
+export function cycle<T>(arr: T[], n: number, direction: 'left' | 'right'): T[] {
+	const len = arr.length;
+	if (len === 0) {
+		return [];
+	}
+	
+	n = n % len;
+	if (direction === 'right') {
+		n = len - n;
+	}
+
+	// Slice, concat, voila!
+	return arr.slice(n).concat(arr.slice(0, n));
+}
+
+
+/**
  * Returns the value of a global variable if it exists, or undefined if it does not.
  *
  * @example
